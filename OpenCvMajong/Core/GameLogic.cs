@@ -4,16 +4,29 @@ namespace OpenCvMajong.Core;
 
 public class GameLogic
 {
-    protected GameBoard Board;
+    public GameBoard GameBoard { get; protected set; }
 
     public void SetBoard(GameBoard board)
     {
-        this.Board = board;
+        this.GameBoard = new GameBoard();
+        this.GameBoard.CardPositions = new Dictionary<Cards, List<CardPos>>(board.CardPositions);
+        // SetCurrentAction();
+        Array.Copy(board.Boards,this.GameBoard.Boards,board.Boards.Length);
     }
 
-    public bool CheckMove(CardPos start, CardPos target, bool isVerMove, out int offset)
+    public void SetCurrentAction(CardPos from, CardPos to, Direction dir)
     {
-        offset = 0;
+        this.GameBoard.CurrentAction = new MoveAction()
+        {
+            startPos = from,
+            endPos = to,
+            direction = dir
+        };
+    }
+
+    public bool CanMergeAction(CardPos start, CardPos target, bool isVerMove, out CardPos offset)
+    {
+        offset = new CardPos();
         if (isVerMove) 
         {
             // 纵向移动，
@@ -23,7 +36,7 @@ public class GameLogic
                 int stepHori = start.X - target.X > 0 ? -1 : 1;
                 for (int i = start.X; i < target.X; i += stepHori)
                 {
-                    if (Board.IsEmpty(i, target.Y))
+                    if (GameBoard.IsEmpty(i, target.Y))
                     {
                         return false;
                     }
@@ -35,7 +48,7 @@ public class GameLogic
             int firstEmpty = -1;
             for (int j = start.Y; j < target.Y; j += stepVert)
             {
-                if (Board.IsEmpty(start.X, j))
+                if (GameBoard.IsEmpty(start.X, j))
                 {
                     firstEmpty = j;
                     break;
@@ -49,7 +62,7 @@ public class GameLogic
             for (int j = 0; j >= moveDis; j += 1)
             {
                 var tempTargetPos = new CardPos(start.X, j * stepVert + firstEmpty);
-                if (Board.GetCard(tempTargetPos) != Cards.Zero)
+                if (GameBoard.GetCard(tempTargetPos) != Cards.Zero)
                 {
                     if (tempTargetPos != target)
                     {
@@ -59,7 +72,7 @@ public class GameLogic
                 }
             }
 
-            offset = firstEmpty - start.Y - 1;
+            offset.Y = firstEmpty - start.Y - 1;
             return isCanMove;
         }
         else 
@@ -70,7 +83,7 @@ public class GameLogic
                 int stepHori = start.Y - target.Y > 0 ? -1 : 1;
                 for (int i = start.Y; i < target.Y; i += stepHori)
                 {
-                    if (Board.IsEmpty(target.X, i))
+                    if (GameBoard.IsEmpty(target.X, i))
                     {
                         return false;
                     }
@@ -82,7 +95,7 @@ public class GameLogic
             int firstEmpty = -1;
             for (int j = start.X; j < target.X; j += stepVert)
             {
-                if (Board.IsEmpty(j, start.Y))
+                if (GameBoard.IsEmpty(j, start.Y))
                 {
                     firstEmpty = j;
                     break;
@@ -97,7 +110,7 @@ public class GameLogic
             {
                 // 有可能在一条线上
                 var tempTargetPos = new CardPos(j * stepVert + firstEmpty, start.Y);
-                if (Board.GetCard(tempTargetPos) != Cards.Zero )
+                if (GameBoard.GetCard(tempTargetPos) != Cards.Zero )
                 {
                     if (tempTargetPos != target)
                     {
@@ -107,23 +120,54 @@ public class GameLogic
                 }
             }
 
-            offset = firstEmpty - start.X - 1;
+            offset.X = firstEmpty - start.X - 1;
             return isCanMove;
         }
 
     }
 
-    public void MergeCard(CardPos start, CardPos target)
+    protected void MergeCard(CardPos start, CardPos target)
     {
-        Board.SetCard(start, Cards.Zero);
-        Board.SetCard(target, Cards.Zero);
+        GameBoard.SetCard(start, Cards.Zero);
+        GameBoard.SetCard(target, Cards.Zero);
     }
     
-    
     // 移动方格
-    public bool Move(Cards startPos,int moveCnt,Direction direction,int distance)
+    public void MergeAction(CardPos startPos,CardPos endPos,CardPos offset,int distance)
     {
+
+
+
+        Direction GetDirection()
+        {
+            if (offset.X == 0)
+            {
+                return offset.Y > 0 ? Direction.ToUp : Direction.ToDown;
+            }
+            return offset.X > 0 ? Direction.ToLeft : Direction.ToRight;
+        }
         
-        return false;
+        SetCurrentAction(startPos,endPos,GetDirection());
+    }
+
+    public bool IsFinalState()
+    {
+        return GameBoard.CardPositions.Count == 0;
+    }
+
+    public void PrintState()
+    {
+        var curAction = GameBoard.CurrentAction;
+        Console.WriteLine($"start: {curAction.startPos} ,direction: {curAction.direction}, target:{curAction.endPos}");
+        Console.WriteLine("Game Mahjong States is :");
+        for (int i = 1; i < GameBoard.Width; i++)
+        {
+            for (int j = 1; j < GameBoard.Height; j++)
+            {
+                Console.Write($"{GameBoard.Boards[i*GameBoard.Width + j]:4}");
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine("-------------------------");
     }
 }

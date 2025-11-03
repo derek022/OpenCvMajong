@@ -5,11 +5,9 @@ namespace OpenCvMajong;
 public class GameBoard
 {
     // 加上边界
-    protected Cards[] Boards;
-    protected Dictionary<Cards,List<CardPos>> CardPositions = new Dictionary<Cards, List<CardPos>>();
-    
-    
-    protected List<MoveData> Moves = new List<MoveData>();
+    public Cards[] Boards = null!;
+    public Dictionary<Cards,List<CardPos>> CardPositions = new Dictionary<Cards, List<CardPos>>();
+    public MoveAction CurrentAction = null!;
     
     public int Width { get; private set; }
     public int Height { get; private set; }
