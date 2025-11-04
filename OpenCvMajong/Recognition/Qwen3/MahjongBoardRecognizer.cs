@@ -1,6 +1,6 @@
 using OpenCvSharp;
 
-namespace OpenCvMajong.Qwen3
+namespace Mahjong.Recognition.Qwen3
 {
     public class MahjongBoardRecognizer
     {

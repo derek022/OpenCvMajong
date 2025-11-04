@@ -1,7 +1,6 @@
 using OpenCvSharp;
-using OpenCvSharp.XFeatures2D;
 
-namespace OpenCvMajong.Qwen3;
+namespace Mahjong.Recognition.Qwen3;
 
 public class MahjongRecognizerWithFeatures
 {

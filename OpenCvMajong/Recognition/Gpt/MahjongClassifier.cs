@@ -1,7 +1,8 @@
 using System.Text.Json;
+using Mahjong.Core.Util;
 using OpenCvSharp;
 
-namespace OpenCvMajong;
+namespace Mahjong.Recognition.Gpt;
 
 public class MahjongClassifier
 {

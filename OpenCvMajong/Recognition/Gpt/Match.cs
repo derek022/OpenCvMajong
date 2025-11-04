@@ -1,8 +1,7 @@
-
 using System.Text.Json;
 using OpenCvSharp;
 
-namespace OpenCvMajong;
+namespace Mahjong.Recognition.Gpt;
 
 public class Match
 {

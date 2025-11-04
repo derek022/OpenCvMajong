@@ -1,8 +1,8 @@
+using Mahjong.Resolution;
 using OpenCvSharp;
 using OpenCvSharp.Features2D;
-using OpenCvSharp.XFeatures2D;
 
-namespace OpenCvMajong.Qwen3;
+namespace Mahjong.Recognition.Qwen3;
 
 
 // 使用示例
