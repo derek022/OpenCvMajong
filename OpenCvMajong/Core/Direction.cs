@@ -1,4 +1,4 @@
-namespace OpenCvMajong.Core;
+namespace Mahjong.Core;
 
 public enum Direction
 {

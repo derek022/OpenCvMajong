@@ -1,4 +1,4 @@
-namespace OpenCvMajong;
+namespace Mahjong.Core.Util;
 
 public enum Cards
 {

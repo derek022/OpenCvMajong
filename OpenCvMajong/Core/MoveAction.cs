@@ -1,10 +1,10 @@
-using OpenCvSharp;
+using OpenCvMajong.Core;
 
-namespace OpenCvMajong.Core;
+namespace Mahjong.Core;
 
 public class MoveAction
 {
-    public CardPos startPos;
-    public CardPos endPos;
+    public Vector2Int startPos;
+    public Vector2Int endPos;
     public Direction direction;
 }

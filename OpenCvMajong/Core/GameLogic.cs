@@ -1,4 +1,5 @@
-using OpenCvSharp;
+using Mahjong.Core;
+using Mahjong.Core.Util;
 
 namespace OpenCvMajong.Core;
 
@@ -9,12 +10,13 @@ public class GameLogic
     public void SetBoard(GameBoard board)
     {
         this.GameBoard = new GameBoard();
-        this.GameBoard.CardPositions = new Dictionary<Cards, List<CardPos>>(board.CardPositions);
+        this.GameBoard.CardPositions = new Dictionary<Cards, List<Vector2Int>>(board.CardPositions);
         // SetCurrentAction();
+        GameBoard.Boards = new Cards[board.Width * board.Height];
         Array.Copy(board.Boards,this.GameBoard.Boards,board.Boards.Length);
     }
 
-    public void SetCurrentAction(CardPos from, CardPos to, Direction dir)
+    public void SetCurrentAction(Vector2Int from, Vector2Int to, Direction dir)
     {
         this.GameBoard.CurrentAction = new MoveAction()
         {
@@ -24,19 +26,19 @@ public class GameLogic
         };
     }
 
-    public bool CanMergeAction(CardPos start, CardPos target, bool isVerMove, out CardPos offset)
+    public bool CanMergeAction(Vector2Int start, Vector2Int target, bool isVerMove, out Vector2Int offset)
     {
-        offset = new CardPos();
+        offset = new Vector2Int(0, 0);
         if (isVerMove) 
         {
             // 纵向移动，
             // 坐标有点疑问？？？？？？
             {
                 // 移动之后的横方向没有空的，直接失败。
-                int stepHori = start.X - target.X > 0 ? -1 : 1;
-                for (int i = start.X; i < target.X; i += stepHori)
+                int stepHori = start.x - target.x > 0 ? -1 : 1;
+                for (int i = start.x; i < target.x; i += stepHori)
                 {
-                    if (GameBoard.IsEmpty(i, target.Y))
+                    if (GameBoard.IsEmpty(i, target.y))
                     {
                         return false;
                     }
@@ -44,11 +46,11 @@ public class GameLogic
             }
 
             // 在检查纵向移动
-            int stepVert = start.Y - target.Y > 0 ? -1 : 1;
+            int stepVert = start.y - target.y > 0 ? -1 : 1;
             int firstEmpty = -1;
-            for (int j = start.Y; j < target.Y; j += stepVert)
+            for (int j = start.y; j < target.y; j += stepVert)
             {
-                if (GameBoard.IsEmpty(start.X, j))
+                if (GameBoard.IsEmpty(start.x, j))
                 {
                     firstEmpty = j;
                     break;
@@ -56,12 +58,12 @@ public class GameLogic
             }
 
             // 待定？？？？
-            var moveDis = Math.Abs(target.Y - start.Y);
+            var moveDis = Math.Abs(target.y - start.y);
             // 移动路径
             bool isCanMove = true;
             for (int j = 0; j >= moveDis; j += 1)
             {
-                var tempTargetPos = new CardPos(start.X, j * stepVert + firstEmpty);
+                var tempTargetPos = new Vector2Int(start.x, j * stepVert + firstEmpty);
                 if (GameBoard.GetCard(tempTargetPos) != Cards.Zero)
                 {
                     if (tempTargetPos != target)
@@ -72,7 +74,7 @@ public class GameLogic
                 }
             }
 
-            offset.Y = firstEmpty - start.Y - 1;
+            offset.y = firstEmpty - start.y - 1;
             return isCanMove;
         }
         else 
@@ -80,10 +82,10 @@ public class GameLogic
             // 横向移动
             {
                 // 移动之后的竖方向没有空的，直接失败。
-                int stepHori = start.Y - target.Y > 0 ? -1 : 1;
-                for (int i = start.Y; i < target.Y; i += stepHori)
+                int stepHori = start.y - target.y > 0 ? -1 : 1;
+                for (int i = start.y; i < target.y; i += stepHori)
                 {
-                    if (GameBoard.IsEmpty(target.X, i))
+                    if (GameBoard.IsEmpty(target.x, i))
                     {
                         return false;
                     }
@@ -91,11 +93,11 @@ public class GameLogic
             }
 
             // 在检查横向移动
-            int stepVert = start.X - target.X > 0 ? -1 : 1;
+            int stepVert = start.x - target.x > 0 ? -1 : 1;
             int firstEmpty = -1;
-            for (int j = start.X; j < target.X; j += stepVert)
+            for (int j = start.x; j < target.x; j += stepVert)
             {
-                if (GameBoard.IsEmpty(j, start.Y))
+                if (GameBoard.IsEmpty(j, start.y))
                 {
                     firstEmpty = j;
                     break;
@@ -103,13 +105,13 @@ public class GameLogic
             }
 
             // 待定？？？？, 
-            var moveDis = Math.Abs(target.X - start.X);
+            var moveDis = Math.Abs(target.x - start.x);
             // 移动路径
             bool isCanMove = true;
             for (int j = 0; j >= moveDis; j += 1)
             {
                 // 有可能在一条线上
-                var tempTargetPos = new CardPos(j * stepVert + firstEmpty, start.Y);
+                var tempTargetPos = new Vector2Int(j * stepVert + firstEmpty, start.y);
                 if (GameBoard.GetCard(tempTargetPos) != Cards.Zero )
                 {
                     if (tempTargetPos != target)
@@ -120,31 +122,44 @@ public class GameLogic
                 }
             }
 
-            offset.X = firstEmpty - start.X - 1;
+            offset.x = firstEmpty - start.x - 1;
             return isCanMove;
         }
 
     }
 
-    protected void MergeCard(CardPos start, CardPos target)
+    protected void MergeCard(Vector2Int start, Vector2Int target)
     {
         GameBoard.SetCard(start, Cards.Zero);
         GameBoard.SetCard(target, Cards.Zero);
     }
     
     // 移动方格
-    public void MergeAction(CardPos startPos,CardPos endPos,CardPos offset,int distance)
+    public void MergeAction(Vector2Int startPos,Vector2Int endPos,Vector2Int offset,int distance)
     {
 
+        // 移动多少个，还有向量的方向。
+        var moveCnt = (int)offset.magnitude;
 
+        var normalVector = offset / moveCnt;
+
+        for (int i = moveCnt - 1; i >= 0; i--)
+        {
+            var pos = startPos + normalVector * i;
+            var end = startPos + normalVector * (i + distance);
+            GameBoard.SetCard(end,GameBoard.GetCard(pos));
+            GameBoard.SetCard(pos, Cards.Zero);
+        }
+        
+        MergeCard(startPos,endPos);
 
         Direction GetDirection()
         {
-            if (offset.X == 0)
+            if (offset.x == 0)
             {
-                return offset.Y > 0 ? Direction.ToUp : Direction.ToDown;
+                return offset.y > 0 ? Direction.ToUp : Direction.ToDown;
             }
-            return offset.X > 0 ? Direction.ToLeft : Direction.ToRight;
+            return offset.x > 0 ? Direction.ToLeft : Direction.ToRight;
         }
         
         SetCurrentAction(startPos,endPos,GetDirection());

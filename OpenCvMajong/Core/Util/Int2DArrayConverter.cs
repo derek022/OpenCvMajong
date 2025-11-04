@@ -1,8 +1,7 @@
-namespace OpenCvMajong;
-
-using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
+namespace Mahjong.Core.Util;
 
 public class Int2DArrayConverter : JsonConverter<int[,]>
 {
