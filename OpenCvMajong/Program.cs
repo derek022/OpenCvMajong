@@ -1,11 +1,23 @@
 ﻿using Mahjong.Resolution;
 using OpenCvSharp;
+using Serilog;
+using Serilog.Events;
 
 class Program
 {
     static void Main(string[] args)
     {
-        
+        Log.Logger = new LoggerConfiguration()
+#if DEBUG
+            .MinimumLevel.Debug()
+#else
+                .MinimumLevel.Information()
+#endif
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .Enrich.FromLogContext()
+            .WriteTo.Async(c => c.Console())
+            .CreateLogger();
+
         // MahjongExecute.Execute();
 
         // Match.Entry2();

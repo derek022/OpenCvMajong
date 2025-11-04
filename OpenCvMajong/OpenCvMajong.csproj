@@ -11,6 +11,9 @@
     <ItemGroup>
       <PackageReference Include="OpenCvSharp4" Version="4.11.0.20250507" />
       <PackageReference Include="OpenCvSharp4.runtime.osx_arm64" Version="4.8.1-rc" />
+      <PackageReference Include="Serilog" Version="4.3.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+      <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     </ItemGroup>
 
     <ItemGroup>

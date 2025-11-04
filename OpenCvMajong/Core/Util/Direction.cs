@@ -1,4 +1,4 @@
-namespace Mahjong.Core;
+namespace Mahjong.Core.Util;
 
 public enum Direction
 {

@@ -1,7 +1,8 @@
-using Mahjong.Core;
+using System.Text;
 using Mahjong.Core.Util;
+using Serilog;
 
-namespace OpenCvMajong.Core;
+namespace Mahjong.Core;
 
 public class GameLogic
 {
@@ -9,25 +10,22 @@ public class GameLogic
 
     public void SetBoard(GameBoard board)
     {
-        this.GameBoard = new GameBoard();
-        this.GameBoard.CardPositions = new Dictionary<Cards, List<Vector2Int>>(board.CardPositions);
-        // SetCurrentAction();
-        GameBoard.Boards = new Cards[board.Width * board.Height];
-        Array.Copy(board.Boards,this.GameBoard.Boards,board.Boards.Length);
+        this.GameBoard = board.DeepClone();
     }
 
     public void SetCurrentAction(Vector2Int from, Vector2Int to, Direction dir)
     {
         this.GameBoard.CurrentAction = new MoveAction()
         {
-            startPos = from,
-            endPos = to,
-            direction = dir
+            StartPos = from,
+            EndPos = to,
+            Direction = dir
         };
     }
 
     public bool CanMergeAction(Vector2Int start, Vector2Int target, bool isVerMove, out Vector2Int offset)
     {
+        
         offset = new Vector2Int(0, 0);
         if (isVerMove) 
         {
@@ -47,7 +45,7 @@ public class GameLogic
 
             // 在检查纵向移动
             int stepVert = start.y - target.y > 0 ? -1 : 1;
-            int firstEmpty = -1;
+            int firstEmpty = start.y;
             for (int j = start.y; j < target.y; j += stepVert)
             {
                 if (GameBoard.IsEmpty(start.x, j))
@@ -64,7 +62,9 @@ public class GameLogic
             for (int j = 0; j >= moveDis; j += 1)
             {
                 var tempTargetPos = new Vector2Int(start.x, j * stepVert + firstEmpty);
-                if (GameBoard.GetCard(tempTargetPos) != Cards.Zero)
+                Log.Logger.Debug($"{tempTargetPos}");
+                var targetCard = GameBoard.GetCard(tempTargetPos);
+                if (targetCard != Cards.Zero )
                 {
                     if (tempTargetPos != target)
                     {
@@ -72,6 +72,7 @@ public class GameLogic
                     }
                     break;
                 }
+
             }
 
             offset.y = firstEmpty - start.y - 1;
@@ -112,7 +113,8 @@ public class GameLogic
             {
                 // 有可能在一条线上
                 var tempTargetPos = new Vector2Int(j * stepVert + firstEmpty, start.y);
-                if (GameBoard.GetCard(tempTargetPos) != Cards.Zero )
+                var targetCard = GameBoard.GetCard(tempTargetPos);
+                if (targetCard != Cards.Zero )
                 {
                     if (tempTargetPos != target)
                     {
@@ -128,16 +130,10 @@ public class GameLogic
 
     }
 
-    protected void MergeCard(Vector2Int start, Vector2Int target)
-    {
-        GameBoard.SetCard(start, Cards.Zero);
-        GameBoard.SetCard(target, Cards.Zero);
-    }
-    
     // 移动方格
     public void MergeAction(Vector2Int startPos,Vector2Int endPos,Vector2Int offset,int distance)
     {
-
+        Log.Logger.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
         // 移动多少个，还有向量的方向。
         var moveCnt = (int)offset.magnitude;
 
@@ -151,8 +147,11 @@ public class GameLogic
             GameBoard.SetCard(pos, Cards.Zero);
         }
         
-        MergeCard(startPos,endPos);
+        GameBoard.MergeCard(startPos,endPos);
 
+        // 更新卡牌的缓存位置信息
+        GameBoard.ForceUpdateCardCachePos();
+        
         Direction GetDirection()
         {
             if (offset.x == 0)
@@ -173,16 +172,17 @@ public class GameLogic
     public void PrintState()
     {
         var curAction = GameBoard.CurrentAction;
-        Console.WriteLine($"start: {curAction.startPos} ,direction: {curAction.direction}, target:{curAction.endPos}");
-        Console.WriteLine("Game Mahjong States is :");
-        for (int i = 1; i < GameBoard.Width; i++)
+        Log.Logger.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
+        Log.Logger.Information("Game Mahjong States is :");
+        for (int i = 1; i < GameBoard.Height - 1; i++)
         {
-            for (int j = 1; j < GameBoard.Height; j++)
+            StringBuilder builder = new StringBuilder();
+            for (int j = 1; j < GameBoard.Width - 1; j++)
             {
-                Console.Write($"{GameBoard.Boards[i*GameBoard.Width + j]:4}");
+                builder.Append($"{GameBoard.GetCard(i, j),10}");
             }
-            Console.WriteLine();
+            Log.Logger.Information(builder.ToString());
         }
-        Console.WriteLine("-------------------------");
+        Log.Logger.Information("-------------------------");
     }
 }

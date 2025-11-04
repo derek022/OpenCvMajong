@@ -1,5 +1,4 @@
 using Mahjong.Core.Util;
-using OpenCvMajong;
 
 namespace Mahjong.Resolution;
 

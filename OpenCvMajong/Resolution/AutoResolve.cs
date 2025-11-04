@@ -1,7 +1,6 @@
 using Mahjong.Core;
 using Mahjong.Core.Util;
-using OpenCvMajong;
-using OpenCvMajong.Core;
+using Serilog;
 
 namespace Mahjong.Resolution;
 
@@ -10,12 +9,13 @@ public class AutoResolve
     public static void Init(Cards[,] initBoard)
     {
         var board = new GameBoard();
-        board.InitBoard(initBoard);
+        board.SetBoardData(initBoard);
         GameLogic logic;
 
         logic = new GameLogic();
         logic.SetBoard(board);
         
+        logic.PrintState();
         Queue<GameLogic> states = new();
         states.Enqueue(logic);
         SearchState(states);
@@ -56,9 +56,11 @@ public class AutoResolve
         {
             if (current.CanMergeAction(from, to, true, out var offset))
             {
+                Log.Logger.Information($"CanMergeAction:{from},{to},true");
                 GameLogic next = new GameLogic();
                 next.SetBoard(current.GameBoard);
                 next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
+                next.PrintState();
                 states.Enqueue(next);
                 SearchState(states);
                 states.Dequeue();
@@ -68,9 +70,11 @@ public class AutoResolve
         {
             if (current.CanMergeAction(from, to, false, out var offset))
             {
+                Log.Logger.Information($"CanMergeAction:{from},{to},false");
                 GameLogic next = new GameLogic();
                 next.SetBoard(current.GameBoard);
                 next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
+                next.PrintState();
                 states.Enqueue(next);
                 SearchState(states);
                 states.Dequeue();
