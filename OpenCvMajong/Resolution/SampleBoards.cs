@@ -1,43 +1,36 @@
-namespace OpenCvMajong;
+using Mahjong.Core.Util;
+using OpenCvMajong;
+
+namespace Mahjong.Resolution;
 
 public class SampleBoards
 {
-    public static Cards[,] EaseBoard1 = new Cards[10, 8]
+    public static Cards[,] EaseBoard1 = new Cards[8, 6]
     {
-        { Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero },
         {
-            Cards.Zero, Cards.WestWind, Cards.TwoBmb, Cards.EastWind, Cards.GreenDrg, Cards.SixDots, Cards.SixRank,
-            Cards.Zero
+             Cards.WestWind, Cards.TwoBmb, Cards.EastWind, Cards.GreenDrg, Cards.SixDots, Cards.SixRank,
         },
         {
-            Cards.Zero, Cards.NorthWind, Cards.SevenRank, Cards.TwoBmb, Cards.NorthWind, Cards.SevenRank, Cards.SixDots,
-            Cards.Zero
+             Cards.NorthWind, Cards.SevenRank, Cards.TwoBmb, Cards.NorthWind, Cards.SevenRank, Cards.SixDots,
         },
         {
-            Cards.Zero, Cards.WestWind, Cards.SixRank, Cards.SevenRank, Cards.SevenBmb, Cards.WhiteDrg, Cards.NorthWind,
-            Cards.Zero
+             Cards.WestWind, Cards.SixRank, Cards.SevenRank, Cards.SevenBmb, Cards.WhiteDrg, Cards.NorthWind,
         },
         {
-            Cards.Zero, Cards.SixRank, Cards.WestWind, Cards.ThreeDots, Cards.SixRank, Cards.ThreeDots, Cards.WhiteDrg,
-            Cards.Zero
+             Cards.SixRank, Cards.WestWind, Cards.ThreeDots, Cards.SixRank, Cards.ThreeDots, Cards.WhiteDrg,
         },
         {
-            Cards.Zero, Cards.OneBmb, Cards.SevenBmb, Cards.ThreeDots, Cards.WestWind, Cards.TwoBmb, Cards.EastWind,
-            Cards.Zero
+             Cards.OneBmb, Cards.SevenBmb, Cards.ThreeDots, Cards.WestWind, Cards.TwoBmb, Cards.EastWind,
         },
         {
-            Cards.Zero, Cards.ThreeDots, Cards.EastWind, Cards.SixDots, Cards.SixDots, Cards.SixRank, Cards.WhiteDrg,
-            Cards.Zero
+             Cards.ThreeDots, Cards.EastWind, Cards.SixDots, Cards.SixDots, Cards.SixRank, Cards.WhiteDrg,
         },
         {
-            Cards.Zero, Cards.OneBmb, Cards.EastWind, Cards.SevenBmb, Cards.NorthWind, Cards.GreenDrg, Cards.WhiteDrg,
-            Cards.Zero
+             Cards.OneBmb, Cards.EastWind, Cards.SevenBmb, Cards.NorthWind, Cards.GreenDrg, Cards.WhiteDrg,
         },
         {
-            Cards.Zero, Cards.GreenDrg, Cards.OneBmb, Cards.SevenBmb, Cards.OneBmb, Cards.TwoBmb, Cards.GreenDrg,
-            Cards.Zero
+             Cards.GreenDrg, Cards.OneBmb, Cards.SevenBmb, Cards.OneBmb, Cards.TwoBmb, Cards.GreenDrg,
         },
-        { Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero },
     };
 
     public static Cards[,] EaseBoard3 = new Cards[12, 10]

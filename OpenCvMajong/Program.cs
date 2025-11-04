@@ -1,5 +1,4 @@
-﻿using OpenCvMajong;
-using OpenCvMajong.Qwen3;
+﻿using Mahjong.Resolution;
 using OpenCvSharp;
 
 class Program
@@ -9,8 +8,9 @@ class Program
         
         // MahjongExecute.Execute();
 
-        Match.Entry2();
+        // Match.Entry2();
         
+        AutoResolve.Init(SampleBoards.EaseBoard1);
         // var mat = Cv2.ImRead("Pics/Daily_Mahjong_Match.jpg");
         // for (int i = 1005; i <= 1010; i+=10)
         // {

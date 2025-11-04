@@ -1,6 +1,9 @@
+using Mahjong.Core;
+using Mahjong.Core.Util;
+using OpenCvMajong;
 using OpenCvMajong.Core;
 
-namespace OpenCvMajong.Resolution;
+namespace Mahjong.Resolution;
 
 public class AutoResolve
 {
@@ -48,14 +51,14 @@ public class AutoResolve
         
     }
 
-    public static void SearchStateOnAction(Queue<GameLogic> states, GameLogic current, CardPos from, CardPos to)
+    public static void SearchStateOnAction(Queue<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to)
     {
         {
             if (current.CanMergeAction(from, to, true, out var offset))
             {
                 GameLogic next = new GameLogic();
                 next.SetBoard(current.GameBoard);
-                next.MergeAction(from,to,offset,Math.Abs(to.Y - from.Y));
+                next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
                 states.Enqueue(next);
                 SearchState(states);
                 states.Dequeue();
@@ -67,7 +70,7 @@ public class AutoResolve
             {
                 GameLogic next = new GameLogic();
                 next.SetBoard(current.GameBoard);
-                next.MergeAction(from,to,offset,Math.Abs(to.Y - from.Y));
+                next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
                 states.Enqueue(next);
                 SearchState(states);
                 states.Dequeue();
