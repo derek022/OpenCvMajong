@@ -7,10 +7,11 @@ namespace Mahjong.Core;
 public class GameLogic
 {
     public GameBoard GameBoard { get; protected set; }
-
+    public Dictionary<Cards,List<Vector2Int>> CardPositions = new Dictionary<Cards, List<Vector2Int>>();
     public void SetBoard(GameBoard board)
     {
         this.GameBoard = board.DeepClone();
+        ForceUpdateCardCachePos();
     }
 
     public void SetCurrentAction(Vector2Int from, Vector2Int to, Direction dir)
@@ -150,7 +151,7 @@ public class GameLogic
         GameBoard.MergeCard(startPos,endPos);
 
         // 更新卡牌的缓存位置信息
-        GameBoard.ForceUpdateCardCachePos();
+        ForceUpdateCardCachePos();
         
         Direction GetDirection()
         {
@@ -166,7 +167,7 @@ public class GameLogic
 
     public bool IsFinalState()
     {
-        return GameBoard.CardPositions.Count == 0;
+        return CardPositions.Count == 0;
     }
 
     public void PrintState()
@@ -174,15 +175,40 @@ public class GameLogic
         var curAction = GameBoard.CurrentAction;
         Log.Logger.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
         Log.Logger.Information("Game Mahjong States is :");
-        for (int i = 1; i < GameBoard.Height - 1; i++)
+        for (int i = 0; i < GameBoard.Height; i++)
         {
             StringBuilder builder = new StringBuilder();
-            for (int j = 1; j < GameBoard.Width - 1; j++)
+            for (int j = 0; j < GameBoard.Width ; j++)
             {
                 builder.Append($"{GameBoard.GetCard(i, j),10}");
             }
             Log.Logger.Information(builder.ToString());
         }
         Log.Logger.Information("-------------------------");
+    }
+    
+    
+    /// <summary>
+    /// 强制更新牌的缓存位置信息
+    /// </summary>
+    public void ForceUpdateCardCachePos()
+    {
+        CardPositions.Clear();
+        for (int x = 1; x < GameBoard.Width - 1; x++)
+        {
+            for (int y = 1; y < GameBoard.Height - 1; y++)
+            {
+                var card = GameBoard.GetCard(x, y);
+                if (card != Cards.Zero)
+                {
+                    if (!CardPositions.ContainsKey(card))
+                    {
+                        CardPositions[card] = new List<Vector2Int>();
+                    }
+
+                    CardPositions[card].Add(new Vector2Int(x, y));
+                }
+            }
+        }
     }
 }

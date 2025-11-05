@@ -5,10 +5,11 @@ namespace Mahjong.Core;
 
 public class GameBoard
 {
+    public GameLogic Logic { get; set; }
     // 加上边界
     public Cards[] Boards = null!;
-    public Dictionary<Cards,List<Vector2Int>> CardPositions = new Dictionary<Cards, List<Vector2Int>>();
-    public MoveAction CurrentAction = null!;
+    
+    public MoveAction CurrentAction = new MoveAction();
     
     public int Width { get; set; }
     public int Height { get; set; }
@@ -24,34 +25,34 @@ public class GameBoard
         {
             for (int y = 0; y < initialBoard.GetLength(1); y++)
             {
-                // Log.Logger.Information($"try set value {x + 1}，{y + 1},{initialBoard[x, y]}");
+                Log.Logger.Information($"x:{x+1},y:{y+1},card:{initialBoard[x,y]}");
                 SetCard(x + 1, y + 1, initialBoard[x, y]);
             }
         }
-
-        ForceUpdateCardCachePos();
     }
 
     public void Clear()
     {
-        Array.Fill(Boards,Cards.Guard,0,Boards.Length);
-        for (int i = 1; i < Width - 1; i++)
+        Array.Fill(Boards, Cards.Zero, 0, Width * Height);
+        for (int i = 0; i < Width ; i++)
         {
-            for (int j = 1; j < Height - 1; j++)
+            for (int j = 0; j < Height; j++)
             {
-                SetCard(i,j,Cards.Zero);
+                if(i == 0 || i == Width - 1 || j == 0 || j == Height - 1)
+                    SetCard(i,j,Cards.Guard);
             }
         }
-        CardPositions.Clear();
     }
     
     public void SetEmpty(Vector2Int pos)
     {
         SetEmpty(pos.x,pos.y);
     }
-
+    
     private int Two2OnePos(int x, int y)
     {
+        if ((uint)x >= Width || (uint)y >= Height)
+            throw new IndexOutOfRangeException($"x:{x},y:{y}");
         return y * Width + x;
     }
 
@@ -103,55 +104,17 @@ public class GameBoard
 
     public void MergeCard(Vector2Int start, Vector2Int target)
     {
-        var card = GetCard(target);
-        if (CardPositions.TryGetValue(card, out List<Vector2Int> positions))
-        {
-            positions.Remove(start);
-            positions.Remove(target);
-
-            if (positions.Count == 0)
-            {
-                CardPositions.Remove(card);
-            }
-        }
-        
         SetCard(start, Cards.Zero);
         SetCard(target, Cards.Zero);
-    }
-
-    /// <summary>
-    /// 强制更新牌的缓存位置信息
-    /// </summary>
-    public void ForceUpdateCardCachePos()
-    {
-        CardPositions.Clear();
-        for (int x = 1; x < Width - 1; x++)
-        {
-            for (int y = 1; y < Height - 1; y++)
-            {
-                var card = GetCard(x, y);
-                if (card != Cards.Zero)
-                {
-                    if (!CardPositions.ContainsKey(card))
-                    {
-                        CardPositions[card] = new List<Vector2Int>();
-                    }
-
-                    CardPositions[card].Add(new Vector2Int(x, y));
-                }
-            }
-        }
     }
 
     public GameBoard DeepClone()
     {
         var gameBoard = new GameBoard();
-        gameBoard.CardPositions = new Dictionary<Cards, List<Vector2Int>>(CardPositions);
         gameBoard.Boards = new Cards[Width * Height];
         gameBoard.Width = Width;
         gameBoard.Height = Height;
-        gameBoard.CurrentAction = new MoveAction();
-        Array.Copy(Boards,gameBoard.Boards,Boards.Length);
+        Array.Copy(Boards, gameBoard.Boards, Width * Height);
         return gameBoard;
     }
 }

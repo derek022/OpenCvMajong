@@ -13,12 +13,15 @@ public class AutoResolve
         GameLogic logic;
 
         logic = new GameLogic();
-        logic.SetBoard(board);
+        board.Logic = logic;
         
+        logic.SetBoard(board);
         logic.PrintState();
-        Queue<GameLogic> states = new();
-        states.Enqueue(logic);
-        SearchState(states);
+        
+        
+        // Queue<GameLogic> states = new();
+        // states.Enqueue(logic);
+        // SearchState(states);
     }
     
     public static void SearchState(Queue<GameLogic> states)
@@ -30,7 +33,7 @@ public class AutoResolve
             return;
         }
 
-        foreach (var pair in current.GameBoard.CardPositions)
+        foreach (var pair in current.CardPositions)
         {
             var values = pair.Value;
             for (int i = 0; i < values.Count; i++)
