@@ -172,19 +172,7 @@ public class GameLogic
 
     public void PrintState()
     {
-        var curAction = GameBoard.CurrentAction;
-        Log.Logger.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
-        Log.Logger.Information("Game Mahjong States is :");
-        for (int i = 0; i < GameBoard.Height; i++)
-        {
-            StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < GameBoard.Width ; j++)
-            {
-                builder.Append($"{GameBoard.GetCard(i, j),10}");
-            }
-            Log.Logger.Information(builder.ToString());
-        }
-        Log.Logger.Information("-------------------------");
+        GameBoard?.PrintState();
     }
     
     

@@ -9,14 +9,13 @@ public class AutoResolve
     public static void Init(Cards[,] initBoard)
     {
         var board = new GameBoard();
-        board.SetBoardData(initBoard);
+        
         GameLogic logic;
 
         logic = new GameLogic();
-        board.Logic = logic;
-        
+        board.SetBoardData(initBoard);
         logic.SetBoard(board);
-        logic.PrintState();
+        // logic.GameBoard.PrintState();
         
         
         // Queue<GameLogic> states = new();

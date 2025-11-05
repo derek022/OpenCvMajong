@@ -1,3 +1,4 @@
+using System.Text;
 using Mahjong.Core.Util;
 using Serilog;
 
@@ -5,7 +6,6 @@ namespace Mahjong.Core;
 
 public class GameBoard
 {
-    public GameLogic Logic { get; set; }
     // 加上边界
     public Cards[] Boards = null!;
     
@@ -26,7 +26,8 @@ public class GameBoard
             for (int y = 0; y < initialBoard.GetLength(1); y++)
             {
                 Log.Logger.Information($"x:{x+1},y:{y+1},card:{initialBoard[x,y]}");
-                SetCard(x + 1, y + 1, initialBoard[x, y]);
+                SetCard(y + 1, x + 1, initialBoard[x, y]);
+                // PrintState();
             }
         }
     }
@@ -51,7 +52,7 @@ public class GameBoard
     
     private int Two2OnePos(int x, int y)
     {
-        if ((uint)x >= Width || (uint)y >= Height)
+        if ((uint)x > Width || (uint)y > Height)
             throw new IndexOutOfRangeException($"x:{x},y:{y}");
         return y * Width + x;
     }
@@ -116,5 +117,23 @@ public class GameBoard
         gameBoard.Height = Height;
         Array.Copy(Boards, gameBoard.Boards, Width * Height);
         return gameBoard;
+    }
+    
+    public void PrintState()
+    {
+        var curAction = CurrentAction;
+        Log.Logger.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
+        Log.Logger.Information("Game Mahjong States is :");
+        for (int i = 0; i < Height; i++)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"{i,3}:row => ");
+            for (int j = 0; j < Width ; j++)
+            {
+                builder.Append($"{GetCard(j, i),10}");
+            }
+            Log.Logger.Information(builder.ToString());
+        }
+        Log.Logger.Information("-------------------------");
     }
 }
