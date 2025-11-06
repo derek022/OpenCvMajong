@@ -1,4 +1,3 @@
-using System.Text;
 using Mahjong.Core.Util;
 using Serilog;
 
@@ -186,9 +185,9 @@ public class GameLogic
     }
 
     // 移动方格
-    public void MergeAction(Vector2Int startPos,Vector2Int endPos,Vector2Int offset,int distance)
+    public void MergeAction(Vector2Int startPos,Vector2Int endPos,Vector2Int offset,int distance,Direction dir)
     {
-        // Log.Logger.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
+        // Log.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
         // 移动多少个，还有向量的方向。
         if (offset != Vector2Int.zero)
         {
@@ -200,7 +199,6 @@ public class GameLogic
             {
                 var pos = startPos + normalVector * i;
                 var end = startPos + normalVector * (i + distance);
-                // Log.Debug($"moving: pos{pos},endPos{end}");
                 GameBoard.SetCard(end,GameBoard.GetCard(pos));
                 GameBoard.SetCard(pos, Cards.Zero);
             }
@@ -211,20 +209,7 @@ public class GameLogic
         // 更新卡牌的缓存位置信息
         ForceUpdateCardCachePos();
         
-        Direction GetDirection()
-        {
-            if (offset == Vector2Int.zero)
-            {
-                return Direction.None;
-            }
-            if (offset.x == 0)
-            {
-                return offset.y > 0 ? Direction.ToDown : Direction.ToUp;
-            }
-            return offset.x > 0 ? Direction.ToRight : Direction.ToLeft;
-        }
-        
-        SetCurrentAction(startPos,endPos,GetDirection());
+        SetCurrentAction(startPos,endPos,dir);
     }
 
     public bool IsFinalState()
@@ -261,4 +246,6 @@ public class GameLogic
             }
         }
     }
+    
+    
 }

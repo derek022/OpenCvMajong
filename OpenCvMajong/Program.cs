@@ -1,4 +1,5 @@
 ﻿using Mahjong.Core;
+using Mahjong.Core.Util;
 using Mahjong.Resolution;
 using Serilog;
 using Serilog.Events;
@@ -32,9 +33,9 @@ class Program
         GameBoard board = new GameBoard();
         board.SetBoardData(TestBoardData.Test1);
         GameLogic gameLogic = new GameLogic(board);
-        var start = new Vector2Int(6, 3);
-        var target = new Vector2Int(4, 2);
-        bool isVerMove = false;
+        var start = new Vector2Int(1, 2);
+        var target = new Vector2Int(2, 1);
+        bool isVerMove = true;
 
         int GetDis()
         {
@@ -47,7 +48,7 @@ class Program
         if (gameLogic.CanMergeAction(start, target, isVerMove, out var offset))
         {
             Log.Information("Merge action");
-            gameLogic.MergeAction(start,target,offset,GetDis());
+            gameLogic.MergeAction(start,target,offset,GetDis(),Tools.GetDir(start,target,isVerMove));
             
             gameLogic.PrintState();
         }

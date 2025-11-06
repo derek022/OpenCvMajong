@@ -19,4 +19,14 @@ public class Tools
         var json = JsonSerializer.Serialize(obj, options);
         return JsonSerializer.Deserialize<T>(json, options)!;
     }
+    
+    
+    public static Direction GetDir(Vector2Int from, Vector2Int to, bool isVer)
+    {
+        if (isVer)
+        {
+            return from.y > to.y ? Direction.ToUp : Direction.ToDown;
+        }
+        return from.x > to.x ? Direction.ToLeft : Direction.ToRight;
+    }
 }

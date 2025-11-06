@@ -56,14 +56,17 @@ public class AutoResolve
         return false;
     }
 
+
+    
     public static void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to)
     {
+        bool isVer = true;
         {
-            if (current.CanMergeAction(from, to, true, out var offset))
+            if (current.CanMergeAction(from, to, isVer, out var offset))
             {
                 // Log.Information($"CanMergeAction:{from},{to},Vertical");
                 GameLogic next = new GameLogic(current.GameBoard.DeepClone());
-                next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
+                next.MergeAction(from,to,offset,Math.Abs(to.y - from.y),Tools.GetDir(from,to,isVer));
                 // next.PrintState();
                 states.AddLast(next);
                 if (SearchState(states))
@@ -75,12 +78,12 @@ public class AutoResolve
         }
 
         {
-            if (current.CanMergeAction(from, to, false, out var offset))
+            isVer = false;
+            if (current.CanMergeAction(from, to, isVer, out var offset))
             {
                 // Log.Information($"CanMergeAction:{from},{to},Horizontal");
                 GameLogic next = new GameLogic(current.GameBoard.DeepClone());
-                next.MergeAction(from,to,offset,Math.Abs(to.x - from.x));
-                // next.PrintState();
+                next.MergeAction(from,to,offset,Math.Abs(to.x - from.x),Tools.GetDir(from,to,isVer));
                 states.AddLast(next);
                 if (SearchState(states))
                 {
