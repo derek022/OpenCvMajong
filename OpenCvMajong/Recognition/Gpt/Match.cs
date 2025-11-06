@@ -192,4 +192,142 @@ public class Match
         Console.WriteLine($"✅ 匹配完成，共 {results.Count} 个匹配点。结果已输出到 result.json 和 matched_multi.png。");
 
     }
+    
+    
+    public static List<Rect> FindTemplateMatchesMultiScale(Mat source, Mat template,
+        double scaleMin = 0.5, double scaleMax = 1.0, double scaleStep = 0.05, double threshold = 0.8)
+    {
+        var allMatches = new List<Rect>();
+
+        Mat sourceGray = new Mat();
+        Mat templateGray = new Mat();
+
+        if (source.Channels() == 3)
+            Cv2.CvtColor(source, sourceGray, ColorConversionCodes.BGR2GRAY);
+        else
+            sourceGray = source;
+
+        if (template.Channels() == 3)
+            Cv2.CvtColor(template, templateGray, ColorConversionCodes.BGR2GRAY);
+        else
+            templateGray = template;
+
+        // 多尺度搜索
+        for (double scale = scaleMin; scale <= scaleMax; scale += scaleStep)
+        {
+            Console.WriteLine("current scale:" + scale);
+            // 缩放模板
+            Mat resizedTemplate = new Mat();
+            Cv2.Resize(templateGray, resizedTemplate,
+                new Size(templateGray.Width * scale, templateGray.Height * scale));
+
+            // 如果缩放后的模板比原图大，跳过
+            if (resizedTemplate.Width > sourceGray.Width || resizedTemplate.Height > sourceGray.Height)
+                continue;
+
+            Mat result = new Mat();
+            Cv2.MatchTemplate(sourceGray, resizedTemplate, result, TemplateMatchModes.CCoeffNormed);
+
+            // 找到匹配位置
+            result.MinMaxLoc(out double minVal, out double maxVal, out Point minLoc, out Point maxLoc);
+
+            if (maxVal >= threshold)
+            {
+                Rect matchRect = new Rect(maxLoc, resizedTemplate.Size());
+                allMatches.Add(matchRect);
+                Console.WriteLine($"找到匹配位置: X={matchRect.X}, Y={matchRect.Y}, Width={matchRect.Width}, Height={matchRect.Height}");
+            }
+        }
+
+        return allMatches;
+    }
+
+    public static List<Rect> FindTemplateMatchesWithNMS(Mat source, Mat template,
+        double threshold = 0.8, double nmsThreshold = 0.3)
+    {
+        var matches = new List<Rect>();
+        var scores = new List<double>();
+
+        Mat sourceGray = new Mat();
+        Mat templateGray = new Mat();
+
+        if (source.Channels() == 3)
+            Cv2.CvtColor(source, sourceGray, ColorConversionCodes.BGR2GRAY);
+        else
+            sourceGray = source;
+
+        if (template.Channels() == 3)
+            Cv2.CvtColor(template, templateGray, ColorConversionCodes.BGR2GRAY);
+        else
+            templateGray = template;
+
+        Mat result = new Mat();
+        Cv2.MatchTemplate(sourceGray, templateGray, result, TemplateMatchModes.CCoeffNormed);
+
+        // 收集所有超过阈值的匹配
+        for (int y = 0; y < result.Height; y++)
+        {
+            for (int x = 0; x < result.Width; x++)
+            {
+                double score = result.At<float>(y, x);
+                if (score >= threshold)
+                {
+                    matches.Add(new Rect(x, y, template.Width, template.Height));
+                    scores.Add(score);
+                }
+            }
+        }
+
+        // 应用非极大值抑制
+        return ApplyNMS(matches, scores, nmsThreshold);
+    }
+
+    private static List<Rect> ApplyNMS(List<Rect> boxes, List<double> scores, double threshold)
+    {
+        if (boxes.Count == 0) return new List<Rect>();
+
+        // 根据分数排序
+        var indices = new List<int>();
+        for (int i = 0; i < boxes.Count; i++) indices.Add(i);
+
+        indices.Sort((a, b) => scores[b].CompareTo(scores[a]));
+
+        var picked = new List<int>();
+
+        while (indices.Count > 0)
+        {
+            int current = indices[0];
+            picked.Add(current);
+
+            for (int i = indices.Count - 1; i > 0; i--)
+            {
+                int idx = indices[i];
+                double iou = CalculateIOU(boxes[current], boxes[idx]);
+
+                if (iou > threshold)
+                {
+                    indices.RemoveAt(i);
+                }
+            }
+
+            indices.RemoveAt(0);
+        }
+
+        var result = new List<Rect>();
+        foreach (int index in picked)
+        {
+            result.Add(boxes[index]);
+        }
+
+        return result;
+    }
+
+    private static double CalculateIOU(Rect rect1, Rect rect2)
+    {
+        Rect intersection = rect1 & rect2;
+        double intersectionArea = intersection.Width * intersection.Height;
+        double unionArea = (rect1.Width * rect1.Height) + (rect2.Width * rect2.Height) - intersectionArea;
+
+        return intersectionArea / unionArea;
+    }
 }
