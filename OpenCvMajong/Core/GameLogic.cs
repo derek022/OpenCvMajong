@@ -58,20 +58,24 @@ public class GameLogic
         return true;
     }
 
-    public bool CanMergeAction(Vector2Int start, Vector2Int target, bool isVerMove, out Vector2Int offset)
+    public bool CanMergeAction(Vector2Int start, Vector2Int target, bool isVerMove, out Vector2Int offset,out int distance)
     {
-        // Log.Debug($"检查移动方向:start:{start},target{target},isVer:{isVerMove}");
+        Log.Debug($"检查移动方向:start:{start},target{target},isVer:{isVerMove}");
         offset = new Vector2Int(0, 0);
+        distance = 0;
         if (start.x == target.x)
         {
+            distance = Math.Abs(start.y - target.y);
             return IsVerticalTwoPointEmpty(start, target);
         }
         else if (start.y == target.y)
         {
+            distance = Math.Abs(start.x - target.x);
             return IsHorizontalTwoPointEmpty(start, target);
         }
         else if (isVerMove)
         {
+            distance = Math.Abs(start.y - target.y);
             // 纵向移动，
             {
                 // 移动之后的横方向没有空的，直接失败。
@@ -128,6 +132,7 @@ public class GameLogic
         }
         else
         {
+            distance = Math.Abs(start.x - target.x);
             // 横向移动
             {
                 // 移动之后的竖方向没有空的，直接失败。
@@ -187,7 +192,7 @@ public class GameLogic
     // 移动方格
     public void MergeAction(Vector2Int startPos,Vector2Int endPos,Vector2Int offset,int distance,Direction dir)
     {
-        // Log.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
+        Log.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
         // 移动多少个，还有向量的方向。
         if (offset != Vector2Int.zero)
         {

@@ -7,6 +7,9 @@ namespace Mahjong.Resolution;
 public class AutoResolve
 {
     private static bool Finished = false;
+
+    private static bool[] VerHorArr = new[] { true, false };
+    
     public static void Init(Cards[,] initBoard)
     {
         Finished = false;
@@ -29,7 +32,7 @@ public class AutoResolve
             PrintResults(states);
             return true;
         }
-
+        
         foreach (var pair in current.CardPositions)
         {
             var values = pair.Value;
@@ -37,13 +40,17 @@ public class AutoResolve
             {
                 for (var j = 0; j < values.Count; j++)
                 {
-                    if (i != j)
+                    if (i == j)
                     {
-                        var from = values[i];
-                        var to = values[j];
-
-                        SearchStateOnAction(states, current, from, to);
-                        if(Finished)
+                        continue;
+                    }
+                    
+                    var from = values[i];
+                    var to = values[j];
+                    foreach (var isVer in VerHorArr)
+                    {
+                        SearchStateOnAction(states, current, from, to, isVer);
+                        if (Finished)
                         {
                             return true;
                         }
@@ -57,40 +64,21 @@ public class AutoResolve
     }
 
 
-    
-    public static void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to)
-    {
-        bool isVer = true;
-        {
-            if (current.CanMergeAction(from, to, isVer, out var offset))
-            {
-                // Log.Information($"CanMergeAction:{from},{to},Vertical");
-                GameLogic next = new GameLogic(current.GameBoard.DeepClone());
-                next.MergeAction(from,to,offset,Math.Abs(to.y - from.y),Tools.GetDir(from,to,isVer));
-                // next.PrintState();
-                states.AddLast(next);
-                if (SearchState(states))
-                {
-                    return;
-                }
-                states.RemoveLast();
-            }
-        }
 
+    public static void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to,
+        bool isVer)
+    {
+        if (current.CanMergeAction(from, to, isVer, out var offset, out var distance))
         {
-            isVer = false;
-            if (current.CanMergeAction(from, to, isVer, out var offset))
+            GameLogic next = new GameLogic(current.GameBoard.DeepClone());
+            next.MergeAction(from, to, offset, distance, Tools.GetDir(from, to, isVer));
+            states.AddLast(next);
+            if (SearchState(states))
             {
-                // Log.Information($"CanMergeAction:{from},{to},Horizontal");
-                GameLogic next = new GameLogic(current.GameBoard.DeepClone());
-                next.MergeAction(from,to,offset,Math.Abs(to.x - from.x),Tools.GetDir(from,to,isVer));
-                states.AddLast(next);
-                if (SearchState(states))
-                {
-                    return;
-                }
-                states.RemoveLast();
+                return;
             }
+
+            states.RemoveLast();
         }
     }
 

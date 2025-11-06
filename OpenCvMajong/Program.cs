@@ -36,19 +36,11 @@ class Program
         var start = new Vector2Int(1, 2);
         var target = new Vector2Int(2, 1);
         bool isVerMove = true;
-
-        int GetDis()
-        {
-            if (isVerMove)
-            {
-                return Math.Abs(target.y - start.y);
-            }
-            return Math.Abs(start.x - target.x);
-        }
-        if (gameLogic.CanMergeAction(start, target, isVerMove, out var offset))
+        
+        if (gameLogic.CanMergeAction(start, target, isVerMove, out var offset,out var distance))
         {
             Log.Information("Merge action");
-            gameLogic.MergeAction(start,target,offset,GetDis(),Tools.GetDir(start,target,isVerMove));
+            gameLogic.MergeAction(start,target,offset,distance,Tools.GetDir(start,target,isVerMove));
             
             gameLogic.PrintState();
         }
