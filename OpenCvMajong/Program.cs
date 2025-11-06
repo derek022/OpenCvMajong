@@ -16,13 +16,14 @@ class Program
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .Enrich.FromLogContext()
             .WriteTo.Async(c => c.Console())
+            .WriteTo.Async(f=>f.File("logs/log.txt"))
             .CreateLogger();
         AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
             Log.Error(e.ExceptionObject as Exception, "Unhandled exception");
         };
 
-        AutoResolve.Init(SampleBoards.EaseBoard1);
+        AutoResolve.Init(SampleBoards.ExpertBoard3);
         // Test();
     }
 
@@ -31,9 +32,9 @@ class Program
         GameBoard board = new GameBoard();
         board.SetBoardData(TestBoardData.Test1);
         GameLogic gameLogic = new GameLogic(board);
-        var start = new Vector2Int(2, 2);
-        var target = new Vector2Int(2, 1);
-        bool isVerMove = true;
+        var start = new Vector2Int(6, 3);
+        var target = new Vector2Int(4, 2);
+        bool isVerMove = false;
 
         int GetDis()
         {

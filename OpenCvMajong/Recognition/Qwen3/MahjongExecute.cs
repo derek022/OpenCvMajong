@@ -60,9 +60,9 @@ class MahjongExecute
         {
             for (int j = 0; j < board.GetLength(1); j++)
             {
-                if (board[i, j] != SampleBoards.EaseBoard3[i, j].ToString())
+                if (board[i, j] != SampleBoards.ExpertBoard3[i, j].ToString())
                 {
-                    Console.WriteLine($"{i}:{j} => recognize is {board[i, j]} , record is {SampleBoards.EaseBoard3[i, j]}");
+                    Console.WriteLine($"{i}:{j} => recognize is {board[i, j]} , record is {SampleBoards.ExpertBoard3[i, j]}");
                 }
             }
             Console.WriteLine();

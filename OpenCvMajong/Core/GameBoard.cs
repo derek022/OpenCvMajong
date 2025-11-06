@@ -1,4 +1,4 @@
-using System.Runtime.Serialization;
+using System.Diagnostics;
 using System.Text;
 using Mahjong.Core.Util;
 using Serilog;
@@ -29,7 +29,6 @@ public class GameBoard
                 SetCard(y + 1, x + 1, initialBoard[x, y]);
             }
         }
-        PrintState();
     }
 
     public void Clear()
@@ -53,7 +52,9 @@ public class GameBoard
     private int Two2OnePos(int x, int y)
     {
         if ((uint)x > Width || (uint)y > Height)
+        {
             throw new IndexOutOfRangeException($"x:{x},y:{y}");
+        }
         return y * Width + x;
     }
 

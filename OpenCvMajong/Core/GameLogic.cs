@@ -111,7 +111,6 @@ public class GameLogic
             for (int j = 1; j < moveDis; j += 1)
             {
                 var tempTargetPos = new Vector2Int(start.x, j * stepVert + firstEmpty);
-                Log.Logger.Debug($"{tempTargetPos}");
                 var targetCard = GameBoard.GetCard(tempTargetPos);
                 if (targetCard != Cards.Zero)
                 {
@@ -125,7 +124,7 @@ public class GameLogic
 
             }
 
-            offset.y = firstEmpty - start.y - 1;
+            offset.y = firstEmpty - start.y - stepVert;
             return isCanMove;
         }
         else
@@ -160,7 +159,7 @@ public class GameLogic
                 firstEmpty += stepHor;
             }
 
-            // 待定？？？？, 
+            // 偏移的距离大小 
             var moveDis = Math.Abs(target.x - start.x);
             // 移动路径
             bool isCanMove = true;
@@ -180,7 +179,7 @@ public class GameLogic
                 }
             }
 
-            offset.x = firstEmpty - start.x - 1;
+            offset.x = firstEmpty - start.x - stepHor;
             return isCanMove;
         }
 
@@ -189,7 +188,7 @@ public class GameLogic
     // 移动方格
     public void MergeAction(Vector2Int startPos,Vector2Int endPos,Vector2Int offset,int distance)
     {
-        Log.Logger.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
+        // Log.Logger.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
         // 移动多少个，还有向量的方向。
         if (offset != Vector2Int.zero)
         {
@@ -201,7 +200,7 @@ public class GameLogic
             {
                 var pos = startPos + normalVector * i;
                 var end = startPos + normalVector * (i + distance);
-                Log.Debug($"moving: pos{pos},endPos{end}");
+                // Log.Debug($"moving: pos{pos},endPos{end}");
                 GameBoard.SetCard(end,GameBoard.GetCard(pos));
                 GameBoard.SetCard(pos, Cards.Zero);
             }

@@ -6,8 +6,10 @@ namespace Mahjong.Resolution;
 
 public class AutoResolve
 {
+    private static bool Finished = false;
     public static void Init(Cards[,] initBoard)
     {
+        Finished = false;
         var board = new GameBoard();
         board.SetBoardData(initBoard);
         
@@ -18,13 +20,14 @@ public class AutoResolve
         SearchState(states);
     }
     
-    public static void SearchState(LinkedList<GameLogic> states)
+    public static bool SearchState(LinkedList<GameLogic> states)
     {
         var current = states.Last();
         if (current.IsFinalState())
         {
-            PrintResult(states);
-            return;
+            Finished = true;
+            PrintResults(states);
+            return true;
         }
 
         foreach (var pair in current.CardPositions)
@@ -38,14 +41,19 @@ public class AutoResolve
                     {
                         var from = values[i];
                         var to = values[j];
-                        
-                        SearchStateOnAction(states,current,from,to);
+
+                        SearchStateOnAction(states, current, from, to);
+                        if(Finished)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
         }
-        
-        
+
+        Log.Information("当前状态没有发现有效路径。返回上一步。。");
+        return false;
     }
 
     public static void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to)
@@ -53,12 +61,15 @@ public class AutoResolve
         {
             if (current.CanMergeAction(from, to, true, out var offset))
             {
-                Log.Information($"CanMergeAction:{from},{to},true");
+                // Log.Information($"CanMergeAction:{from},{to},Vertical");
                 GameLogic next = new GameLogic(current.GameBoard.DeepClone());
                 next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
-                next.PrintState();
+                // next.PrintState();
                 states.AddLast(next);
-                SearchState(states);
+                if (SearchState(states))
+                {
+                    return;
+                }
                 states.RemoveLast();
             }
         }
@@ -66,20 +77,23 @@ public class AutoResolve
         {
             if (current.CanMergeAction(from, to, false, out var offset))
             {
-                Log.Information($"CanMergeAction:{from},{to},false");
+                // Log.Information($"CanMergeAction:{from},{to},Horizontal");
                 GameLogic next = new GameLogic(current.GameBoard.DeepClone());
-                next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
-                next.PrintState();
+                next.MergeAction(from,to,offset,Math.Abs(to.x - from.x));
+                // next.PrintState();
                 states.AddLast(next);
-                SearchState(states);
+                if (SearchState(states))
+                {
+                    return;
+                }
                 states.RemoveLast();
             }
         }
     }
 
-    public static void PrintResult(LinkedList<GameLogic> states)
+    public static void PrintResults(LinkedList<GameLogic> states)
     {
-        Console.WriteLine("发现可解路径，移动过程如下：");
+        Log.Information("发现可解路径，移动过程如下：");
         foreach (var state in states)
         {
             state.PrintState();
