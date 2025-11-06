@@ -9,23 +9,18 @@ public class AutoResolve
     public static void Init(Cards[,] initBoard)
     {
         var board = new GameBoard();
-        
-        GameLogic logic;
-
-        logic = new GameLogic();
         board.SetBoardData(initBoard);
-        logic.SetBoard(board);
-        // logic.GameBoard.PrintState();
         
+        GameLogic logic = new GameLogic(board);
         
-        // Queue<GameLogic> states = new();
-        // states.Enqueue(logic);
-        // SearchState(states);
+        LinkedList<GameLogic> states = new();
+        states.AddLast(logic);
+        SearchState(states);
     }
     
-    public static void SearchState(Queue<GameLogic> states)
+    public static void SearchState(LinkedList<GameLogic> states)
     {
-        var current = states.Peek();
+        var current = states.Last();
         if (current.IsFinalState())
         {
             PrintResult(states);
@@ -53,38 +48,36 @@ public class AutoResolve
         
     }
 
-    public static void SearchStateOnAction(Queue<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to)
+    public static void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to)
     {
         {
             if (current.CanMergeAction(from, to, true, out var offset))
             {
-                Log.Logger.Information($"CanMergeAction:{from},{to},true");
-                GameLogic next = new GameLogic();
-                next.SetBoard(current.GameBoard);
+                Log.Information($"CanMergeAction:{from},{to},true");
+                GameLogic next = new GameLogic(current.GameBoard.DeepClone());
                 next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
                 next.PrintState();
-                states.Enqueue(next);
+                states.AddLast(next);
                 SearchState(states);
-                states.Dequeue();
+                states.RemoveLast();
             }
         }
 
         {
             if (current.CanMergeAction(from, to, false, out var offset))
             {
-                Log.Logger.Information($"CanMergeAction:{from},{to},false");
-                GameLogic next = new GameLogic();
-                next.SetBoard(current.GameBoard);
+                Log.Information($"CanMergeAction:{from},{to},false");
+                GameLogic next = new GameLogic(current.GameBoard.DeepClone());
                 next.MergeAction(from,to,offset,Math.Abs(to.y - from.y));
                 next.PrintState();
-                states.Enqueue(next);
+                states.AddLast(next);
                 SearchState(states);
-                states.Dequeue();
+                states.RemoveLast();
             }
         }
     }
 
-    public static void PrintResult(Queue<GameLogic> states)
+    public static void PrintResult(LinkedList<GameLogic> states)
     {
         Console.WriteLine("发现可解路径，移动过程如下：");
         foreach (var state in states)

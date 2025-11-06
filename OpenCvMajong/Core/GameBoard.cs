@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.Text;
 using Mahjong.Core.Util;
 using Serilog;
@@ -7,10 +8,10 @@ namespace Mahjong.Core;
 public class GameBoard
 {
     // 加上边界
-    public Cards[] Boards = null!;
-    
-    public MoveAction CurrentAction = new MoveAction();
-    
+    public Cards[] Boards { get; set; } = null!;
+
+    public MoveAction CurrentAction { get; set; } = new MoveAction();
+
     public int Width { get; set; }
     public int Height { get; set; }
     
@@ -18,18 +19,17 @@ public class GameBoard
     {
         Width = initialBoard.GetLength(1) + 2;
         Height = initialBoard.GetLength(0) + 2;
-        Log.Logger.Information($"width:{Width},height:{Height}");
+        Log.Information($"width:{Width},height:{Height}");
         Boards = new Cards[Width * Height];
         Clear();
         for (int x = 0; x < initialBoard.GetLength(0); x++)
         {
             for (int y = 0; y < initialBoard.GetLength(1); y++)
             {
-                Log.Logger.Information($"x:{x+1},y:{y+1},card:{initialBoard[x,y]}");
                 SetCard(y + 1, x + 1, initialBoard[x, y]);
-                // PrintState();
             }
         }
+        PrintState();
     }
 
     public void Clear()
@@ -71,6 +71,16 @@ public class GameBoard
     {
         Boards[Two2OnePos(x,y)] = Cards.Guard;
     }
+
+    public bool IsGuard(Vector2Int pos)
+    {
+        return IsGuard(pos.x, pos.y);
+    }
+
+    public bool IsGuard(int x, int y)
+    {
+        return Boards[Two2OnePos(x,y)] == Cards.Guard;
+    }
     
     public bool IsEmpty(Vector2Int pos)
     {
@@ -111,19 +121,20 @@ public class GameBoard
 
     public GameBoard DeepClone()
     {
-        var gameBoard = new GameBoard();
-        gameBoard.Boards = new Cards[Width * Height];
-        gameBoard.Width = Width;
-        gameBoard.Height = Height;
-        Array.Copy(Boards, gameBoard.Boards, Width * Height);
-        return gameBoard;
+        // var gameBoard = new GameBoard();
+        // gameBoard.Boards = new Cards[Width * Height];
+        // gameBoard.Width = Width;
+        // gameBoard.Height = Height;
+        // Array.Copy(Boards, gameBoard.Boards, Width * Height);
+        // return gameBoard;
+        return Tools.DeepCopy(this);
     }
     
     public void PrintState()
     {
         var curAction = CurrentAction;
-        Log.Logger.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
-        Log.Logger.Information("Game Mahjong States is :");
+        Log.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
+        Log.Information("Game Mahjong States is :");
         for (int i = 0; i < Height; i++)
         {
             StringBuilder builder = new StringBuilder();
@@ -132,8 +143,8 @@ public class GameBoard
             {
                 builder.Append($"{GetCard(j, i),10}");
             }
-            Log.Logger.Information(builder.ToString());
+            Log.Information(builder.ToString());
         }
-        Log.Logger.Information("-------------------------");
+        Log.Information("-------------------------");
     }
 }
