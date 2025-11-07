@@ -72,6 +72,7 @@ public class AutoResolve
         {
             GameLogic next = new GameLogic(current.GameBoard.DeepClone());
             next.MergeAction(from, to, offset, distance, Tools.GetDir(from, to, isVer));
+            next.PrintState();
             states.AddLast(next);
             if (SearchState(states))
             {
