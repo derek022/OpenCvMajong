@@ -20,7 +20,11 @@ public class AutoResolve
         
         LinkedList<GameLogic> states = new();
         states.AddLast(logic);
-        SearchState(states);
+        if (SearchState(states))
+        {
+            // 打印 log
+            PrintResults(states);   
+        }
     }
     
     public static bool SearchState(LinkedList<GameLogic> states)
@@ -29,7 +33,6 @@ public class AutoResolve
         if (current.IsFinalState())
         {
             Finished = true;
-            PrintResults(states);
             return true;
         }
         
@@ -83,12 +86,22 @@ public class AutoResolve
         }
     }
 
-    public static void PrintResults(LinkedList<GameLogic> states)
+    public static void PrintResults(LinkedList<GameLogic> states,bool execute = false)
     {
         Log.Information("发现可解路径，移动过程如下：");
         foreach (var state in states)
         {
             state.PrintState();
+            if (execute)
+            {
+                var action = state.GameBoard.CurrentAction;
+                SwipeWithAction(action);
+            }
         }
+    }
+
+    private static void SwipeWithAction(MoveAction action)
+    {
+        // InputHelper.SwipeScreen(action.StartPos,action.EndPos);
     }
 }
