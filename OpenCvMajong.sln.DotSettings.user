@@ -17,6 +17,6 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AVector2_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003FLibrary_003FApplication_0020Support_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fd72c280b25ac550c8247d8b28c1e12eb2d35b7c2328ff05fd7b1e472f34c26_003FVector2_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=7254fa25_002D5dbc_002D45a0_002D847e_002Df1e1e9f943a7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test_CanMergeAction" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::7837F7E3-9977-47FF-9C85-24B52EC70558::net9.0::OpenCvMajong.Tests.UnitTest1.Test_CanMergeAction&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::89E66EF4-3081-4C43-BC2F-F23120F9E6B1::net9.0::OpenCvMajong.Test.UnitTest1.Test1&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

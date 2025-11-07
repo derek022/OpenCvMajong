@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCvMajong", "OpenCvMajong\OpenCvMajong.csproj", "{6AA7F35B-6D29-4E83-B16F-796AD46972C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCvMajong.Test", "OpenCvMajong.Test\OpenCvMajong.Test.csproj", "{89E66EF4-3081-4C43-BC2F-F23120F9E6B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{6AA7F35B-6D29-4E83-B16F-796AD46972C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AA7F35B-6D29-4E83-B16F-796AD46972C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AA7F35B-6D29-4E83-B16F-796AD46972C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89E66EF4-3081-4C43-BC2F-F23120F9E6B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89E66EF4-3081-4C43-BC2F-F23120F9E6B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89E66EF4-3081-4C43-BC2F-F23120F9E6B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89E66EF4-3081-4C43-BC2F-F23120F9E6B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
