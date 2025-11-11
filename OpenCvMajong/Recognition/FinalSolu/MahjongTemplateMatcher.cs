@@ -36,14 +36,19 @@ public class MahjongTemplateMatcher
             // 创建副本用于掩码
             using var resultCopy = resultMat.Clone();
 
+            int i = 0;
             while (true)
             {
+                i++;
                 // 找最高分位置
                 double minVal, maxVal;
                 OpenCvSharp.Point minLoc, maxLoc;
                 Cv2.MinMaxLoc(resultCopy, out minVal, out maxVal, out minLoc, out maxLoc);
 
-                if (maxVal < threshold) break;
+                if (maxVal < threshold)
+                {
+                    break;
+                }
 
                 // 记录结果
                 results.Add(new MatchResult
@@ -55,7 +60,7 @@ public class MahjongTemplateMatcher
                 });
 
                 // 创建掩码：覆盖匹配区域
-                int maskSize = (int)(Math.Max(template.Width, template.Height) * scale * 0.8);
+                int maskSize = (int)(Math.Max(template.Width, template.Height) * scale * 0.7);
                 int x1 = Math.Max(0, maxLoc.X - maskSize / 2);
                 int y1 = Math.Max(0, maxLoc.Y - maskSize / 2);
                 int x2 = Math.Min(resultCopy.Cols, maxLoc.X + maskSize / 2 + resizedTemplate.Width);
@@ -64,6 +69,7 @@ public class MahjongTemplateMatcher
                 // 将掩码区域置为 -1（无效值）
                 var roi = new Mat(resultCopy, new Rect(x1, y1, x2 - x1, y2 - y1));
                 roi.SetTo(new Scalar(-1));
+                // Cv2.ImWrite($"roi_{i}.png", resultCopy);
             }
         }
 

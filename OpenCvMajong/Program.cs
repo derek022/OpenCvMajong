@@ -8,7 +8,46 @@ using Serilog.Events;
 
 class Program
 {
+    
     static async Task Main(string[] args)
+    {
+        InitLogger();
+        TestMatcher();
+    }
+
+    private static void TestScreenPos2DigitalPos()
+    {
+        Screen2DigitalData.Execute("Res/Pics/Daily_Mahjong_Match.jpg", "Res/Prepared");
+    }
+    
+    private static void TestMatcher()
+    {
+        string bigImagePath = "Res/Pics/Daily_Mahjong_Match.jpg";
+        string resultPath = "matched_result.jpg";
+
+        var croppedTemplate = Cv2.ImRead("Res/Prepared/ThreeBmb.png");
+        //
+        // double minScale = 0.725,
+        // double maxScale = 0.716,
+        // double step = 0.05,
+        // double threshold = 0.72
+        var matches = MahjongTemplateMatcher.FindAllUniqueMatches(
+            bigImagePath: bigImagePath,
+            template: croppedTemplate,
+            minScale: 0.725,
+            maxScale: 0.726,
+            step: 0.05,
+            threshold: 0.82
+        );
+        
+        // 3. 可视化并保存
+        if (matches.Any())
+        {
+            MahjongTemplateMatcher.DrawMatches(bigImagePath, matches, croppedTemplate, resultPath);
+        }
+    }
+
+    private static void InitLogger()
     {
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
@@ -26,34 +65,7 @@ class Program
             Log.Error(e.ExceptionObject as Exception, "Unhandled exception");
         };
 
-        string bigImagePath = "Res/Pics/Daily_Mahjong_Match.jpg";
-        // string templatePath = "WestWind.png";
-        // string croppedTemplatePath = "WestWind_Cropped.png";
-        string resultPath = "matched_result.jpg";
-
-        var croppedTemplate = Cv2.ImRead("Res/Prepared/Autumn.png");
-        //
-        // double minScale = 0.725,
-        // double maxScale = 0.716,
-        // double step = 0.05,
-        // double threshold = 0.72
-        var matches = MahjongTemplateMatcher.FindAllUniqueMatches(
-            bigImagePath: bigImagePath,
-            template: croppedTemplate,
-            minScale: 0.725,
-            maxScale: 0.726,
-            step: 0.05,
-            threshold: 0.72
-        );
-
-        
-        // 3. 可视化并保存
-        if (matches.Any())
-        {
-            MahjongTemplateMatcher.DrawMatches(bigImagePath, matches, croppedTemplate, resultPath);
-        }
     }
-
     private static void PrepareCards()
     {
         foreach (var file in Directory.GetFiles("Res/Cards/", "*.*", SearchOption.AllDirectories))
