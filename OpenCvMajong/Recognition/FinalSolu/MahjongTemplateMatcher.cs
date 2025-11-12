@@ -5,6 +5,17 @@ namespace Mahjong.Recognition.FinalSolu;
 
 public class MahjongTemplateMatcher
 {
+    /// <summary>
+    /// 模板匹配主函数
+    /// </summary>
+    /// <param name="bigImagePath"></param>
+    /// <param name="template"></param>
+    /// <param name="minScale"></param>
+    /// <param name="maxScale"></param>
+    /// <param name="step"></param>
+    /// <param name="threshold"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public static List<MatchResult> FindAllUniqueMatches(
         string bigImagePath,
         Mat template,
@@ -13,7 +24,7 @@ public class MahjongTemplateMatcher
         double step = 0.002,
         double threshold = 0.9)
     {
-    // 查找所有唯一匹配项
+        // 查找所有唯一匹配项
         using var bigImg = new Mat(bigImagePath);
         if (bigImg.Empty())
             throw new ArgumentException($"无法加载大图: {bigImagePath}");
@@ -38,7 +49,6 @@ public class MahjongTemplateMatcher
             // 创建副本用于掩码
             using var resultCopy = resultMat.Clone();
 
-            var tempResults = new List<MatchResult>();
             int i = 0;
             while (true)
             {
@@ -52,16 +62,31 @@ public class MahjongTemplateMatcher
                 {
                     break;
                 }
-
                 
-                // 记录结果
-                tempResults.Add(new MatchResult
+                // 去重，位置相近的屏蔽掉
+                
+                bool isContains = false;
+                foreach (var res in results)
                 {
-                    X = maxLoc.X,
-                    Y = maxLoc.Y,
-                    Scale = scale,
-                    Score = maxVal
-                });
+                    if (Math.Abs(maxLoc.X - res.X) < 10 && Math.Abs(maxLoc.Y - res.Y) < 10)
+                    {
+                        isContains = true;
+                        break;
+                    }
+                }
+
+                if (!isContains)
+                {
+                    // 记录结果
+                    results.Add(new MatchResult
+                    {
+                        X = maxLoc.X,
+                        Y = maxLoc.Y,
+                        Scale = scale,
+                        Score = maxVal
+                    });
+                }
+                
 
                 // 创建掩码：覆盖匹配区域
                 int maskSize = (int)(Math.Max(template.Width, template.Height) * scale * 0.7);
@@ -73,35 +98,14 @@ public class MahjongTemplateMatcher
                 // 将掩码区域置为 -1（无效值）
                 var roi = new Mat(resultCopy, new Rect(x1, y1, x2 - x1, y2 - y1));
                 roi.SetTo(new Scalar(-1));
-                // Cv2.ImWrite($"roi_{i}.png", resultCopy);
             }
-            results.AddRange(tempResults);
         }
 
         // 按得分降序排列
         results = results.OrderByDescending(r => r.Score).ToList();
         
-        // 去重，位置相近的屏蔽掉
-        var removeSameResults = new List<MatchResult>();
-        foreach (var res in results)
-        {
-            bool ishave = false;
-            foreach (var removeRes in removeSameResults)
-            {
-                if (Math.Abs(removeRes.X - res.X) < 10 && Math.Abs(removeRes.Y - res.Y) < 10)
-                {
-                    ishave = true;
-                    break;
-                }
-            }
-
-            if (!ishave)
-            {
-                removeSameResults.Add(res);
-            }
-        }
-        Console.WriteLine($"共找到 {removeSameResults.Count} 个唯一匹配项。");
-        return removeSameResults;
+        Console.WriteLine($"共找到 {results.Count} 个唯一匹配项。");
+        return results;
     }
 
     // 可视化结果（保存为文件）

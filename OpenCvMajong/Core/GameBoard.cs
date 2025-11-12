@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Mahjong.Core.Util;
 using Serilog;
@@ -10,7 +11,7 @@ public class GameBoard
     // 加上边界
     public Cards[] Boards { get; set; } = null!;
 
-    public MoveAction CurrentAction { get; set; }
+    public MoveAction CurrentAction { get; set; } = null;
 
     public int Width { get; set; }
     public int Height { get; set; }
@@ -44,11 +45,7 @@ public class GameBoard
         }
     }
     
-    public void SetEmpty(Vector2Int pos)
-    {
-        SetEmpty(pos.x,pos.y);
-    }
-    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int Two2OnePos(int x, int y)
     {
         if ((uint)x > Width || (uint)y > Height)
@@ -57,6 +54,12 @@ public class GameBoard
         }
         return y * Width + x;
     }
+    
+    public void SetEmpty(Vector2Int pos)
+    {
+        SetEmpty(pos.x,pos.y);
+    }
+    
 
     public void SetEmpty(int x, int y)
     {

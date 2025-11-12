@@ -5,6 +5,12 @@ namespace Mahjong.Recognition.FinalSolu;
 
 public class CropTool
 {
+    /// <summary>
+    /// 模板图片裁剪
+    /// </summary>
+    /// <param name="src"></param>
+    /// <param name="dst"></param>
+    /// <param name="margin"></param>
     public static void Entry(string src,string dst,int margin)
     {
         var res = AutoCropTemplate(src, margin);

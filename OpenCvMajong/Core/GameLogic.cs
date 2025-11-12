@@ -9,8 +9,6 @@ public class GameLogic
     public GameBoard GameBoard { get; protected set; }
     
     public Dictionary<Cards,List<Vector2Int>> CardPositions = new Dictionary<Cards, List<Vector2Int>>();
-
-    public int CurActIdx { get; set; } = 0;
     
     public GameLogic(GameBoard gameBoard)
     {
@@ -195,7 +193,6 @@ public class GameLogic
     // 移动方格
     public void MergeAction(Vector2Int startPos,Vector2Int endPos,Vector2Int offset,int distance,Direction dir)
     {
-        CurActIdx++;
         // Log.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
         // 移动多少个，还有向量的方向。
         if (offset != Vector2Int.zero)
@@ -208,14 +205,26 @@ public class GameLogic
             {
                 var pos = startPos + normalVector * i;
                 var end = startPos + normalVector * (i + distance);
-                GameBoard.SetCard(end,GameBoard.GetCard(pos));
+                var cardValue = GameBoard.GetCard(pos);
+                if (CardPositions.TryGetValue(cardValue, out var positions))
+                {
+                    positions.Remove(pos);
+                    positions.Add(end);
+                }
+                GameBoard.SetCard(end,cardValue);
                 GameBoard.SetCard(pos, Cards.Zero);
             }
         }
-        
+
+        var targetCardValue = GameBoard.GetCard(endPos);
+        if(CardPositions.TryGetValue(targetCardValue, out var targetCards))
+        {
+            targetCards.Remove(startPos);
+            targetCards.Remove(endPos);
+        }
         GameBoard.MergeCard(startPos,endPos);
-        // 更新卡牌的缓存位置信息
-        ForceUpdateCardCachePos();
+        // 强制更新卡牌的缓存位置信息
+        // ForceUpdateCardCachePos();
         
         SetCurrentAction(startPos,endPos,dir);
     }

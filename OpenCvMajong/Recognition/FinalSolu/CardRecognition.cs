@@ -5,8 +5,16 @@ using Serilog;
 
 namespace Mahjong.Recognition.FinalSolu;
 
-public class Screen2DigitalData
+public class CardRecognition
 {
+    /// <summary>
+    /// 卡片识别主函数
+    /// </summary>
+    /// <param name="screenShot"></param>
+    /// <param name="templateDir"></param>
+    /// <param name="minScale"></param>
+    /// <param name="maxScale"></param>
+    /// <returns></returns>
     public static Cards[,] Execute(string screenShot, string templateDir, float minScale,float maxScale)
     {
         Cards[,] initBoard = new Cards[12,10];

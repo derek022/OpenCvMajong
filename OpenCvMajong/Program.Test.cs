@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Mahjong.Core;
 using Mahjong.Core.Util;
 using Mahjong.Recognition.FinalSolu;
@@ -10,9 +11,9 @@ namespace Mahjong;
 public partial class Program
 {
     
-    private static void TestMatcher()
+    private static void TestSingleMatcher()
     {
-        string bigImagePath = "screen.png";
+        string bigImagePath = "screen_fail2.png";
         string resultPath = "matched_result.jpg";
 
         var croppedTemplate = Cv2.ImRead("Res/Prepared/NineDots.png");
@@ -43,13 +44,13 @@ public partial class Program
     
     private async static Task TestScreenPos2DigitalPos()
     {
-        var screenFile = "screen.png";
-        InputHelper.Screenshot(screenFile);
-        await Task.Delay(500);
+        var screenFile = "screen_fail2.png";
+        // InputHelper.Screenshot(screenFile);
+        // await Task.Delay(500);
         
-        var initBaord = Screen2DigitalData.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X,
+        var initBaord = CardRecognition.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X,
             Config.ScaleRange.Y);
-
+        
         GameBoard board = new GameBoard();
         board.SetBoardData(initBaord);
         board.PrintState();

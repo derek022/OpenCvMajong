@@ -16,8 +16,8 @@ public partial class Program
         InitLogger();
         // Swipe(new Vector2Int(4,2),new Vector2Int(4,3));
         // TestDead();
-        // TestMatcher();
-        await RunAsync();
+        await TestScreenPos2DigitalPos();
+        // await RunAsync();
     }
 
 
@@ -44,7 +44,7 @@ public partial class Program
         InputHelper.Screenshot(screenFile);
         await Task.Delay(500);
         // 图像识别
-        var initBoard = Screen2DigitalData.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X, Config.ScaleRange.Y);
+        var initBoard = CardRecognition.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X, Config.ScaleRange.Y);
         
         // 自动解析
         var results = AutoResolve.Init(initBoard);
@@ -119,7 +119,8 @@ public partial class Program
     
     private static void InitLogger()
     {
-        File.Delete("logs/log.txt");
+        if(File.Exists("logs/log.txt"))
+            File.Delete("logs/log.txt");
         Log.Logger = new LoggerConfiguration()
 #if DEBUG
             .MinimumLevel.Debug()
