@@ -103,11 +103,12 @@ public partial class Program
     /// <summary>
     /// 测试结局棋盘
     /// </summary>
-    private static async void TestResolve()
+    private static async Task TestResolve()
     {
         try
         {
-            var steps =await AutoResolve.InitAsync<SearchStateV1Recursion>(SampleBoards.ExpertBoard4);
+            var steps = await AutoResolve.InitAsync<SearchStateV1Recursion>(SampleBoards.ExpertBoard4);
+            
             foreach (var step in steps)
             {
                 step.PrintState();
@@ -115,7 +116,7 @@ public partial class Program
         }
         catch (Exception e)
         {
-            throw; // TODO handle exception
+            throw; 
         }
     }
 

@@ -12,7 +12,6 @@ public class SearchStateV1Recursion : ISearchLogic
     private static bool Finished = false;
     
     LinkedList<GameLogic> initialPath = new();
-    private static List<GameLogic> DeadStates = new();
     
     public void Initialize(GameLogic initialState)
     {
@@ -37,10 +36,13 @@ public class SearchStateV1Recursion : ISearchLogic
         var current = states.Last();
         if (current.IsFinalState())
         {
+            Log.Error(" find final state");
             Finished = true;
             return true;
         }
 
+        Log.Error("--------------- 开始搜索当前牌局------------");
+        current.PrintState();
         foreach (var pair in current.CardPositions)
         {
             var values = pair.Value;
@@ -70,24 +72,12 @@ public class SearchStateV1Recursion : ISearchLogic
             }
         }
 
-        current.PrintState();
-        Log.Information("当前状态没有发现有效路径。返回上一步。。");
+        // current.PrintState();
+        // Log.Information("当前状态没有发现有效路径。返回上一步。。");
         Thread.Sleep(10);
-        DeadStates.Add(current);
         return false;
     }
     
-    private static bool IsProcessedState(GameLogic current)
-    {
-        foreach (var state in DeadStates)
-        {
-            if (state.IsSameState(current))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
     
     private static void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to,
         bool isVer)
@@ -96,19 +86,13 @@ public class SearchStateV1Recursion : ISearchLogic
         {
             GameLogic next = new GameLogic(current.GameBoard.DeepClone());
             next.MergeAction(from, to, offset, distance, Tools.GetDir(from, to, isVer));
-            if (!IsProcessedState(next))
+            states.AddLast(next);
+            if (InternalSearchState(states))
             {
-                states.AddLast(next);
-                if (InternalSearchState(states))
-                {
-                    return;
-                }
-                states.RemoveLast();
+                return;
             }
-            else
-            {
-                Log.Error("当前状态已经处理过。。。");
-            }
+
+            states.RemoveLast();
         }
     }
 

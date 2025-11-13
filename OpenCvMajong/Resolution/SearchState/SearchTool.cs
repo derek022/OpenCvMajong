@@ -17,8 +17,8 @@ public static class SearchTool
         }
         else
         {
-            yield return false;
             yield return true;
+            yield return false;
         }
     }
 

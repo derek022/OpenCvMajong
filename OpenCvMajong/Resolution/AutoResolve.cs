@@ -7,11 +7,8 @@ namespace Mahjong.Resolution;
 
 public class AutoResolve
 {
-    private static bool Finished = false;
-    
     public static async Task<LinkedList<GameLogic>> InitAsync<T>(Cards[,] initBoard) where T : ISearchLogic ,new()
     {
-        Finished = false;
         var board = new GameBoard();
         board.SetBoardData(initBoard);
         Log.Information("初始状态：");
@@ -21,7 +18,9 @@ public class AutoResolve
         var search = new T();
         search.Initialize(logic);
 
-        return await search.SearchState();
+        var result = await search.SearchState();
+        PrintResults(result);
+        return result;
     }
     
     public static void PrintResults(LinkedList<GameLogic> states)

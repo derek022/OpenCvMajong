@@ -16,7 +16,7 @@ public partial class Program
         InitLogger();
         // Swipe(new Vector2Int(4,2),new Vector2Int(4,3));
         // TestDead();
-        TestResolve();
+        await TestResolve();
         // await TestScreenPos2DigitalPos();
         // await RunAsync();
     }

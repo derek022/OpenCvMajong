@@ -34,33 +34,46 @@ public partial class SampleBoards
             },
         };
 
-        public static Cards[,] TestDead = new Cards[8, 6]
+        public static Cards[,] TestDead2 = new Cards[12, 10]
         {
             {
-                Cards.OneBmb, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+                Cards.GreenDrg, Cards.FiveRank, Cards.TwoBmb, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero
             },
             {
-                Cards.WestWind, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
             },
             {
-                Cards.OneBmb, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero
             },
             {
-                Cards.WestWind, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.NorthWind, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
             },
             {
-                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
             },
             {
-                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
             },
             {
-                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
             },
             {
-                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.FiveRank
             },
-        };
-    }
+            {
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
+            },
+            {
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.TwoBmb, Cards.Zero,
+            },
+            {
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.GreenDrg
+            },
 
+            {
+                Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero, Cards.NorthWind
+            }
+        };
+
+    }
 }
