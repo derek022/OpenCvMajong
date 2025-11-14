@@ -8,6 +8,7 @@ namespace Mahjong.Recognition.FinalSolu;
 public class CardRecognition
 {
     protected static readonly ILogger Logger = Log.ForContext<CardRecognition>();
+    
     /// <summary>
     /// 卡片识别主函数
     /// </summary>
@@ -48,7 +49,6 @@ public class CardRecognition
                 {
                     Logger.Error($"坐标转换出现错误，已有值{initBoard[realPos.y, realPos.x].ToString()}");
                 }
-                
             }
         }
 

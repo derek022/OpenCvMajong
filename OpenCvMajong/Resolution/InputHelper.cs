@@ -7,6 +7,7 @@ public class InputHelper
 {
     private static void RunSheel(string cmd)
     {
+        Console.WriteLine("executing shell: " + cmd);
         ProcessStartInfo startInfo = new ProcessStartInfo
         {
             FileName = "adb", // 要执行的命令

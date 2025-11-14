@@ -19,135 +19,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Res\Cards\Autumn.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\Bamboo.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\Chrysan.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\EastWind.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\EightBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\EightDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\EightRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\FiveBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\FiveDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\FiveRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\FourBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\FourDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\FourRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\GreenDrg.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\NineBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\NineDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\NineRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\NorthWind.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\OneBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\OneDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\OneRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\Orchid.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\Plum.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\RedDrg.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\SevenBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\SevenDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\SevenRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\SixBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\SixDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\SixRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\SouthWind.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\Spring.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\Summer.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\ThreeBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\ThreeDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\ThreeRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\TwoBmb.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\TwoDots.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\TwoRank.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\WestWind.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\WhiteDrg.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
-      <None Update="Res\Cards\Winter.png">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </None>
       <None Update="Res\Pics\Daily_Mahjong_Match.jpg">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <!-- 将 Cards 文件夹下的所有内容标记为 Content，并在构建时复制到输出目录 -->
+      <Content Include="Res\**\*.png">
+        <!-- 设置 CopyToOutputDirectory 属性 -->
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
