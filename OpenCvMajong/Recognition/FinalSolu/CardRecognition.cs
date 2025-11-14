@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Mahjong.Core;
 using Mahjong.Core.Util;
 using OpenCvSharp;
@@ -19,27 +20,23 @@ public class CardRecognition
     /// <returns></returns>
     public static Cards[,] Execute(string screenShot, string templateDir, float minScale,float maxScale)
     {
+        var swTotal = Stopwatch.StartNew(); // 总时间计时
+
         Cards[,] initBoard = new Cards[12,10];
+        var bigMat = new Mat(screenShot);
         foreach (var templateFilePath in Directory.GetFiles(templateDir,"*.png"))
         {
             Logger.Debug($"查找：{templateFilePath}");
             using var template = new Mat(templateFilePath);
-            var results = MahjongTemplateMatcher.FindAllUniqueMatches(screenShot, template, minScale, maxScale);
+            var results = MahjongTemplateMatcher.FindAllUniqueMatches(bigMat, template, minScale, maxScale);
             
             var cardName = Path.GetFileNameWithoutExtension(templateFilePath);
             // 将这个枚举名称，转换为枚举，
             var cardEnum = Enum.Parse<Cards>(cardName);
 
-            if (results.Count % 2 != 0)
-            {
-                Logger.Error("出现错误的识别。。。");
-                MahjongTemplateMatcher.DrawMatches(screenShot, results, template,
-                    "result/" + Path.GetFileName(templateFilePath));
-            }
             foreach (var pos in results)
             {
                 var realPos = new Vector2Int(pos.X / 100 , (pos.Y - 500) / 100);
-                // Logger.Debug($"坐标转换：{cardEnum.ToString()},screenPos:{pos.X}_{pos.Y} , realPos:{realPos}");
 
                 if (initBoard[realPos.y, realPos.x] == Cards.Zero || initBoard[realPos.y, realPos.x] == cardEnum)
                 {
@@ -52,17 +49,9 @@ public class CardRecognition
             }
         }
 
-        for (int i = 0; i < initBoard.GetLength(0); i++)
-        {
-            for (int j = 0; j < initBoard.GetLength(1); j++)
-            {
-                if (initBoard[i, j] == Cards.Zero)
-                {
-                    Logger.Error($"{i},{j} is zero");
-                }
-            }
-        }
-        
+        swTotal.Stop();
+        Logger.Information($"总耗时: {swTotal.ElapsedMilliseconds} ms");
+
         return initBoard;
     }
 }

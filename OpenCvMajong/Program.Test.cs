@@ -27,8 +27,9 @@ public partial class Program
         // double maxScale = 0.716,
         // double step = 0.05,
         // double threshold = 0.72
+        var bigMat = new Mat(bigImagePath);
         var matches = MahjongTemplateMatcher.FindAllUniqueMatches(
-            bigImagePath: bigImagePath,
+            bigImg:bigMat,
             template: croppedTemplate
         );
         
@@ -45,29 +46,29 @@ public partial class Program
         // InputHelper.Screenshot(screenFile);
         // await Task.Delay(500);
 
-        var initBaord = CardRecognition.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X,
+        var initBaord = CardRecognitionParallel.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X,
             Config.ScaleRange.Y);
 
         GameBoard board = new GameBoard();
         board.SetBoardData(initBaord);
         board.PrintState();
-        var steps = await AutoResolve.InitAsync<SearchStateVRecursion>(initBaord);
-
-        if (steps == null)
-            return;
-        Log.Debug("发现了解题过程。。。。");
-        foreach (var step in steps)
-        {
-            var action = step.GameBoard.CurrentAction;
-            if (action is null)
-                continue;
-
-            // var movePos = Action2MovePos(action);
-
-            step.GameBoard.PrintState();
-            // Swipe(action.StartPos,movePos);
-            // await Task.Delay(TimeSpan.FromSeconds(2f));
-        }
+        // var steps = await AutoResolve.InitAsync<SearchStateVRecursion>(initBaord);
+        //
+        // if (steps == null)
+        //     return;
+        // Log.Debug("发现了解题过程。。。。");
+        // foreach (var step in steps)
+        // {
+        //     var action = step.GameBoard.CurrentAction;
+        //     if (action is null)
+        //         continue;
+        //
+        //     // var movePos = Action2MovePos(action);
+        //
+        //     step.GameBoard.PrintState();
+        //     // Swipe(action.StartPos,movePos);
+        //     // await Task.Delay(TimeSpan.FromSeconds(2f));
+        // }
     }
 
 

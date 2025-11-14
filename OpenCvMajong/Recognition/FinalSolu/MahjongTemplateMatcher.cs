@@ -19,7 +19,7 @@ public class MahjongTemplateMatcher
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public static List<MatchResult> FindAllUniqueMatches(
-        string bigImagePath,
+        Mat bigImg,
         Mat template,
         double minScale = 0.71,
         double maxScale = 0.7281,
@@ -27,10 +27,7 @@ public class MahjongTemplateMatcher
         double threshold = 0.9)
     {
         // 查找所有唯一匹配项
-        using var bigImg = new Mat(bigImagePath);
-        if (bigImg.Empty())
-            throw new ArgumentException($"无法加载大图: {bigImagePath}");
-
+        
         var results = new List<MatchResult>();
 
         for (double scale = minScale; scale <= maxScale; scale += step)
