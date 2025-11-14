@@ -7,6 +7,7 @@ namespace Mahjong.Recognition.FinalSolu;
 
 public class CardRecognition
 {
+    protected static readonly ILogger Logger = Log.ForContext<CardRecognition>();
     /// <summary>
     /// 卡片识别主函数
     /// </summary>
@@ -20,7 +21,7 @@ public class CardRecognition
         Cards[,] initBoard = new Cards[12,10];
         foreach (var templateFilePath in Directory.GetFiles(templateDir,"*.png"))
         {
-            Log.Debug($"查找：{templateFilePath}");
+            Logger.Debug($"查找：{templateFilePath}");
             using var template = new Mat(templateFilePath);
             var results = MahjongTemplateMatcher.FindAllUniqueMatches(screenShot, template, minScale, maxScale);
             
@@ -30,14 +31,14 @@ public class CardRecognition
 
             if (results.Count % 2 != 0)
             {
-                Log.Error("出现错误的识别。。。");
+                Logger.Error("出现错误的识别。。。");
                 MahjongTemplateMatcher.DrawMatches(screenShot, results, template,
                     "result/" + Path.GetFileName(templateFilePath));
             }
             foreach (var pos in results)
             {
                 var realPos = new Vector2Int(pos.X / 100 , (pos.Y - 500) / 100);
-                // Log.Debug($"坐标转换：{cardEnum.ToString()},screenPos:{pos.X}_{pos.Y} , realPos:{realPos}");
+                // Logger.Debug($"坐标转换：{cardEnum.ToString()},screenPos:{pos.X}_{pos.Y} , realPos:{realPos}");
 
                 if (initBoard[realPos.y, realPos.x] == Cards.Zero || initBoard[realPos.y, realPos.x] == cardEnum)
                 {
@@ -45,7 +46,7 @@ public class CardRecognition
                 }
                 else
                 {
-                    Log.Error($"坐标转换出现错误，已有值{initBoard[realPos.y, realPos.x].ToString()}");
+                    Logger.Error($"坐标转换出现错误，已有值{initBoard[realPos.y, realPos.x].ToString()}");
                 }
                 
             }
@@ -57,7 +58,7 @@ public class CardRecognition
             {
                 if (initBoard[i, j] == Cards.Zero)
                 {
-                    Log.Error($"{i},{j} is zero");
+                    Logger.Error($"{i},{j} is zero");
                 }
             }
         }

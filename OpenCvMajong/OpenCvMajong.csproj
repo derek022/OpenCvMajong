@@ -148,9 +148,6 @@
       <None Update="Res\Pics\Daily_Mahjong_Match.jpg">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="screen_fail2.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 
     <ItemGroup>

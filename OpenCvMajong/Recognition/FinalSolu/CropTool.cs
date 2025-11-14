@@ -5,6 +5,8 @@ namespace Mahjong.Recognition.FinalSolu;
 
 public class CropTool
 {
+    protected static readonly ILogger Logger = Log.ForContext<CardRecognition>();
+    
     /// <summary>
     /// 模板图片裁剪
     /// </summary>
@@ -19,7 +21,7 @@ public class CropTool
 
     private static Mat AutoCropTemplate(string filepath, int margin = 5)
     {
-        Log.Information("CropTool:" + filepath);
+        Logger.Information("CropTool:" + filepath);
         using var img = Cv2.ImRead(filepath);
         using var grey = new Mat();
         using var binary = new Mat();
@@ -31,7 +33,7 @@ public class CropTool
 
         if (contours.Length == 0)
         {
-            Log.Information("未找到任何轮廓，无法裁剪。");
+            Logger.Information("未找到任何轮廓，无法裁剪。");
             return img;
         }
         

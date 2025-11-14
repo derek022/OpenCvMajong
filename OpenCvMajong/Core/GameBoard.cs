@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Mahjong.Core.Util;
@@ -8,10 +7,12 @@ namespace Mahjong.Core;
 
 public class GameBoard
 {
+    protected static readonly ILogger Logger = Log.ForContext<GameBoard>();
+    
     // 加上边界
     public Cards[] Boards { get; set; } = null!;
 
-    public MoveAction CurrentAction { get; set; } = null;
+    public MoveAction? CurrentAction { get; set; }
 
     public int Width { get; set; }
     public int Height { get; set; }
@@ -20,7 +21,7 @@ public class GameBoard
     {
         Width = initialBoard.GetLength(1) + 2;
         Height = initialBoard.GetLength(0) + 2;
-        Log.Information($"width:{Width},height:{Height}");
+        Logger.Information($"width:{Width},height:{Height}");
         Boards = new Cards[Width * Height];
         Clear();
         for (int x = 0; x < initialBoard.GetLength(0); x++)
@@ -139,9 +140,9 @@ public class GameBoard
         var curAction = CurrentAction;
         if (curAction != null)
         {
-            Log.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
+            Logger.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
         }
-        Log.Information("Game Mahjong States is :");
+        Logger.Information("Game Mahjong States is :");
         for (int i = 0; i < Height; i++)
         {
             StringBuilder builder = new StringBuilder();
@@ -150,8 +151,8 @@ public class GameBoard
             {
                 builder.Append($"{GetCard(j, i),10}");
             }
-            Log.Information(builder.ToString());
+            Logger.Information(builder.ToString());
         }
-        Log.Information("-------------------------");
+        Logger.Information("-------------------------");
     }
 }

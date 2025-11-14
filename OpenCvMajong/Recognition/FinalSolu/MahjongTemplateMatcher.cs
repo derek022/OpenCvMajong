@@ -5,6 +5,8 @@ namespace Mahjong.Recognition.FinalSolu;
 
 public class MahjongTemplateMatcher
 {
+    protected static readonly ILogger Logger = Log.ForContext<CardRecognition>();
+    
     /// <summary>
     /// 模板匹配主函数
     /// </summary>
@@ -104,7 +106,7 @@ public class MahjongTemplateMatcher
         // 按得分降序排列
         results = results.OrderByDescending(r => r.Score).ToList();
         
-        Console.WriteLine($"共找到 {results.Count} 个唯一匹配项。");
+        Logger.Information($"共找到 {results.Count} 个唯一匹配项。");
         return results;
     }
 
@@ -129,6 +131,6 @@ public class MahjongTemplateMatcher
         }
 
         img.SaveImage(outputPath);
-        Console.WriteLine($"结果已保存至: {outputPath}");
+        Logger.Information($"结果已保存至: {outputPath}");
     }
 }

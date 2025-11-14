@@ -16,8 +16,8 @@ public partial class Program
         InitLogger();
         // Swipe(new Vector2Int(4,2),new Vector2Int(4,3));
         // TestDead();
-        await TestResolve();
-        // await TestScreenPos2DigitalPos();
+        // await TestResolve();
+        await TestScreenPos2DigitalPos();
         // await RunAsync();
     }
 
@@ -48,7 +48,7 @@ public partial class Program
         var initBoard = CardRecognition.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X, Config.ScaleRange.Y);
 
         // 自动解析
-        var results = await AutoResolve.InitAsync<SearchStateV1Recursion>(initBoard);
+        var results = await AutoResolve.InitAsync<SearchStateVRecursion>(initBoard);
 
         if (results.Count == 0)
         {
@@ -79,7 +79,14 @@ public partial class Program
                 Swipe(action.StartPos, movePos);
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(1f));
+            // 避免出现二选一的情况。
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(100));
+                Click(action.EndPos);
+            }
+            
+
+            await Task.Delay(TimeSpan.FromMilliseconds(1000f));
         }
 
         return true;

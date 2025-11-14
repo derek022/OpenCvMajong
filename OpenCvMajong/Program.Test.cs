@@ -38,39 +38,40 @@ public partial class Program
             MahjongTemplateMatcher.DrawMatches(bigImagePath, matches, croppedTemplate, resultPath);
         }
     }
-    
+
     private async static Task TestScreenPos2DigitalPos()
     {
-        var screenFile = "screen_fail2.png";
+        var screenFile = "screen_back.png";
         // InputHelper.Screenshot(screenFile);
         // await Task.Delay(500);
-        
+
         var initBaord = CardRecognition.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X,
             Config.ScaleRange.Y);
-        
+
         GameBoard board = new GameBoard();
         board.SetBoardData(initBaord);
         board.PrintState();
-        var steps =await AutoResolve.InitAsync<SearchStateV1Recursion>(initBaord);
+        var steps = await AutoResolve.InitAsync<SearchStateVRecursion>(initBaord);
 
         if (steps == null)
             return;
+        Log.Debug("发现了解题过程。。。。");
         foreach (var step in steps)
         {
             var action = step.GameBoard.CurrentAction;
-            if(action is null)
+            if (action is null)
                 continue;
-            
-            var movePos = Action2MovePos(action);
-            
+
+            // var movePos = Action2MovePos(action);
+
             step.GameBoard.PrintState();
-            Swipe(action.StartPos,movePos);
-            await Task.Delay(TimeSpan.FromSeconds(2f));
+            // Swipe(action.StartPos,movePos);
+            // await Task.Delay(TimeSpan.FromSeconds(2f));
         }
     }
-    
 
-    
+
+
     private static void PrepareCards()
     {
         foreach (var file in Directory.GetFiles("Res/Cards/", "*.png", SearchOption.AllDirectories))
@@ -107,7 +108,7 @@ public partial class Program
     {
         try
         {
-            var steps = await AutoResolve.InitAsync<SearchStateV1Recursion>(SampleBoards.ExpertBoard4);
+            var steps = await AutoResolve.InitAsync<SearchStateVRecursion>(SampleBoards.ExpertBoard4);
             
             foreach (var step in steps)
             {
