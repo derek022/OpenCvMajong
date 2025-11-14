@@ -56,7 +56,11 @@ public class CardRecognitionParallel
         // 2. === 并行处理内存中的模板 ===
         Logger.Information("开始并行识别...");
         var swParallel = Stopwatch.StartNew();
-        Parallel.ForEach(inMemoryTemplates, item =>
+        var parallelOptions = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = Environment.ProcessorCount // 或者指定一个数字，如 4
+        };
+        Parallel.ForEach(inMemoryTemplates, parallelOptions,item =>
         {
             var (cardEnum, template) = item;
             var swTask = Stopwatch.StartNew(); // 记录单个任务耗时
