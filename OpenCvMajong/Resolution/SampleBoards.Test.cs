@@ -2,9 +2,11 @@ using Mahjong.Core.Util;
 
 namespace Mahjong.Resolution;
 
-public class TestBoardData
+public partial class SampleBoards
 {
-    public static Cards[,] Test1 = new Cards[8, 6]
+    public class TestData
+    {
+         public static Cards[,] Test1 = new Cards[8, 6]
     {
         {
             Cards.Zero, Cards.WestWind, Cards.Zero, Cards.Zero, Cards.Zero, Cards.Zero,
@@ -87,4 +89,6 @@ public class TestBoardData
             Cards.GreenDrg, Cards.OneBmb, Cards.SevenBmb, Cards.OneBmb, Cards.TwoBmb, Cards.GreenDrg,
         },
     };
+    }
+    
 }

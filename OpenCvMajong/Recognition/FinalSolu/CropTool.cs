@@ -13,6 +13,7 @@ public class CropTool
 
     private static Mat AutoCropTemplate(string filepath, int margin = 5)
     {
+        Log.Information("CropTool:" + filepath);
         using var img = Cv2.ImRead(filepath);
         using var grey = new Mat();
         using var binary = new Mat();

@@ -2,7 +2,7 @@ using Mahjong.Core.Util;
 
 namespace Mahjong.Resolution;
 
-public class SampleBoards
+public partial class SampleBoards
 {
     public static Cards[,] EaseBoard1 = new Cards[8, 6]
     {

@@ -1,4 +1,5 @@
 using OpenCvSharp;
+using Serilog;
 
 namespace Mahjong.Recognition.FinalSolu;
 
@@ -7,10 +8,10 @@ public class MahjongTemplateMatcher
     public static List<MatchResult> FindAllUniqueMatches(
         string bigImagePath,
         Mat template,
-        double minScale = 0.725,
-        double maxScale = 0.716,
-        double step = 0.05,
-        double threshold = 0.72)
+        double minScale = 0.71,
+        double maxScale = 0.7281,
+        double step = 0.001,
+        double threshold = 0.9)
     {
     // 查找所有唯一匹配项
         using var bigImg = new Mat(bigImagePath);
@@ -21,6 +22,7 @@ public class MahjongTemplateMatcher
 
         for (double scale = minScale; scale <= maxScale; scale += step)
         {
+            Log.Information($"当前比例尺:{scale}");
             // 缩放模板
             int newW = (int)(template.Width * scale);
             int newH = (int)(template.Height * scale);
@@ -36,13 +38,14 @@ public class MahjongTemplateMatcher
             // 创建副本用于掩码
             using var resultCopy = resultMat.Clone();
 
+            var tempResults = new List<MatchResult>();
             int i = 0;
             while (true)
             {
                 i++;
                 // 找最高分位置
                 double minVal, maxVal;
-                OpenCvSharp.Point minLoc, maxLoc;
+                Point minLoc, maxLoc;
                 Cv2.MinMaxLoc(resultCopy, out minVal, out maxVal, out minLoc, out maxLoc);
 
                 if (maxVal < threshold)
@@ -50,8 +53,9 @@ public class MahjongTemplateMatcher
                     break;
                 }
 
+                
                 // 记录结果
-                results.Add(new MatchResult
+                tempResults.Add(new MatchResult
                 {
                     X = maxLoc.X,
                     Y = maxLoc.Y,
@@ -71,6 +75,13 @@ public class MahjongTemplateMatcher
                 roi.SetTo(new Scalar(-1));
                 // Cv2.ImWrite($"roi_{i}.png", resultCopy);
             }
+            results.AddRange(tempResults);
+            Log.Information($"当前比例尺{scale,03},找到了{i - 1}个匹配方案");
+            if (tempResults.Count % 2 == 0)
+            {
+                Log.Information("数量符合，直接返回。");
+                return tempResults;
+            }
         }
 
         // 按得分降序排列
@@ -89,12 +100,12 @@ public class MahjongTemplateMatcher
         {
             int w = (int)(template.Width * match.Scale);
             int h = (int)(template.Height * match.Scale);
-            var pt1 = new OpenCvSharp.Point(match.X, match.Y);
-            var pt2 = new OpenCvSharp.Point(match.X + w, match.Y + h);
+            var pt1 = new Point(match.X, match.Y);
+            var pt2 = new Point(match.X + w, match.Y + h);
 
             Cv2.Rectangle(img, pt1, pt2, Scalar.Red, 2);
             Cv2.PutText(img, $"{idx}: {match.Score:F3}", 
-                new OpenCvSharp.Point(match.X + 5, match.Y + 20),
+                new Point(match.X + 5, match.Y + 20),
                 HersheyFonts.HersheySimplex, 0.6, Scalar.Red, 2);
             idx++;
         }

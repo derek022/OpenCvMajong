@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Numerics;
 using Mahjong.Core;
 using Mahjong.Core.Util;
 using OpenCvSharp;
@@ -8,18 +9,14 @@ namespace Mahjong.Recognition.FinalSolu;
 
 public class Screen2DigitalData
 {
-    public static Cards[,] Execute(string screenShot,string templateDir)
+    public static Cards[,] Execute(string screenShot, string templateDir, float minScale,float maxScale)
     {
         Cards[,] initBoard = new Cards[12,10];
         foreach (var templateFilePath in Directory.GetFiles(templateDir,"*.png"))
         {
             Log.Debug($"查找：{templateFilePath}");
-            var template = new Mat(templateFilePath);
-            var results = MahjongTemplateMatcher.FindAllUniqueMatches(screenShot, template,
-                minScale: 0.725,
-                maxScale: 0.726,
-                step: 0.05,
-                threshold: 0.83);
+            using var template = new Mat(templateFilePath);
+            var results = MahjongTemplateMatcher.FindAllUniqueMatches(screenShot, template, minScale, maxScale);
             
             var cardName = Path.GetFileNameWithoutExtension(templateFilePath);
             // 将这个枚举名称，转换为枚举，
