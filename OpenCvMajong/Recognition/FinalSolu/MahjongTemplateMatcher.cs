@@ -10,7 +10,7 @@ public class MahjongTemplateMatcher
         Mat template,
         double minScale = 0.71,
         double maxScale = 0.7281,
-        double step = 0.001,
+        double step = 0.002,
         double threshold = 0.9)
     {
     // 查找所有唯一匹配项
@@ -76,18 +76,32 @@ public class MahjongTemplateMatcher
                 // Cv2.ImWrite($"roi_{i}.png", resultCopy);
             }
             results.AddRange(tempResults);
-            // Log.Information($"当前比例尺{scale,03},找到了{i - 1}个匹配方案");
-            if (tempResults.Count % 2 == 0)
-            {
-                Log.Information($"当前比例尺{scale},查找的数量符合{i - 1}，直接返回。");
-                return tempResults;
-            }
         }
 
         // 按得分降序排列
         results = results.OrderByDescending(r => r.Score).ToList();
-        Console.WriteLine($"共找到 {results.Count} 个唯一匹配项。");
-        return results;
+        
+        // 去重，位置相近的屏蔽掉
+        var removeSameResults = new List<MatchResult>();
+        foreach (var res in results)
+        {
+            bool ishave = false;
+            foreach (var removeRes in removeSameResults)
+            {
+                if (Math.Abs(removeRes.X - res.X) < 10 && Math.Abs(removeRes.Y - res.Y) < 10)
+                {
+                    ishave = true;
+                    break;
+                }
+            }
+
+            if (!ishave)
+            {
+                removeSameResults.Add(res);
+            }
+        }
+        Console.WriteLine($"共找到 {removeSameResults.Count} 个唯一匹配项。");
+        return removeSameResults;
     }
 
     // 可视化结果（保存为文件）

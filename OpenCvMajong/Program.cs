@@ -15,6 +15,8 @@ public partial class Program
     {
         InitLogger();
         // Swipe(new Vector2Int(4,2),new Vector2Int(4,3));
+        // TestDead();
+        // TestMatcher();
         await RunAsync();
     }
 
@@ -43,6 +45,7 @@ public partial class Program
         await Task.Delay(500);
         // 图像识别
         var initBoard = Screen2DigitalData.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X, Config.ScaleRange.Y);
+        
         // 自动解析
         var results = AutoResolve.Init(initBoard);
 
@@ -52,8 +55,8 @@ public partial class Program
             return false;
         }
 
-        var json = JsonSerializer.Serialize(results);
-        await File.WriteAllTextAsync("temp.json", json);
+        // var json = JsonSerializer.Serialize(results);
+        // await File.WriteAllTextAsync("temp.json", json);
         // 移除初始状态
         // results.RemoveFirst();
         // 根据结果，移动方块，滑动屏幕
@@ -62,14 +65,41 @@ public partial class Program
             var action = step.GameBoard.CurrentAction;
             if(action is null)
                 continue;
-
-            var movePos = Action2MovePos(action);
+            
             step.GameBoard.PrintState();
-            Swipe(action.StartPos,movePos);
+            
+            if (action.StartPos.x == action.EndPos.x || action.StartPos.y == action.EndPos.y)
+            {
+                Click(action.StartPos);   
+            }
+            else
+            {
+                var movePos = Action2MovePos(action);
+                Swipe(action.StartPos,movePos);    
+            }
+            
             await Task.Delay(TimeSpan.FromSeconds(1f));
         }
 
         return true;
+    }
+    
+    
+
+    private static void Swipe(Vector2Int start,Vector2Int move)
+    {
+        Log.Information($"Swipe:{start}-{move}");
+        var offset = new Vector2Int(0, 5);
+        start = (start + offset) * 100;
+        move = (move + offset) * 100;
+        InputHelper.SwipeScreen(start.x,start.y,move.x,move.y);
+    }
+
+    private static void Click(Vector2Int pos)
+    {
+        var offset = new Vector2Int(0, 5);
+        pos = (pos + offset) * 100;
+        InputHelper.ClickScreen(pos.x, pos.y);
     }
 
     private static Vector2Int Action2MovePos(MoveAction action)

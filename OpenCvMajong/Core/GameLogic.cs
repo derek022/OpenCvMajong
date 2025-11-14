@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Mahjong.Core.Util;
 using Serilog;
 
@@ -9,6 +10,8 @@ public class GameLogic
     
     public Dictionary<Cards,List<Vector2Int>> CardPositions = new Dictionary<Cards, List<Vector2Int>>();
 
+    public int CurActIdx { get; set; } = 0;
+    
     public GameLogic(GameBoard gameBoard)
     {
         SetBoard(gameBoard);
@@ -192,6 +195,7 @@ public class GameLogic
     // 移动方格
     public void MergeAction(Vector2Int startPos,Vector2Int endPos,Vector2Int offset,int distance,Direction dir)
     {
+        CurActIdx++;
         // Log.Information($"检测到可以移动的方块,start:{startPos},end:{endPos},offset:{offset},distance:{distance}");
         // 移动多少个，还有向量的方向。
         if (offset != Vector2Int.zero)
@@ -210,7 +214,6 @@ public class GameLogic
         }
         
         GameBoard.MergeCard(startPos,endPos);
-
         // 更新卡牌的缓存位置信息
         ForceUpdateCardCachePos();
         
@@ -224,7 +227,18 @@ public class GameLogic
 
     public void PrintState()
     {
+        Log.Information("--------------------LogicPrintState start---------");
         GameBoard?.PrintState();
+        PrintCachePos();
+        Log.Information("--------------------LogicPrintState end----------");
+    }
+
+    private void PrintCachePos()
+    {
+        foreach (var pair in CardPositions)
+        {
+            Log.Information($"card:{pair.Key},position:{JsonSerializer.Serialize(pair.Value)}");
+        }
     }
     
     

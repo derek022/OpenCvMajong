@@ -12,10 +12,10 @@ public partial class Program
     
     private static void TestMatcher()
     {
-        string bigImagePath = "Res/Pics/Daily_Mahjong_Match.jpg";
+        string bigImagePath = "screen.png";
         string resultPath = "matched_result.jpg";
 
-        var croppedTemplate = Cv2.ImRead("Res/Prepared/FourDots.png");
+        var croppedTemplate = Cv2.ImRead("Res/Prepared/NineDots.png");
         
         // double minScale = 0.725,
         // double maxScale = 0.716,
@@ -31,6 +31,13 @@ public partial class Program
         {
             MahjongTemplateMatcher.DrawMatches(bigImagePath, matches, croppedTemplate, resultPath);
         }
+    }
+
+    private static void TestDead()
+    {
+        var steps = AutoResolve.Init(SampleBoards.TestData.TestDead);
+
+        
     }
     
     
@@ -48,6 +55,8 @@ public partial class Program
         board.PrintState();
         var steps = AutoResolve.Init(initBaord);
 
+        if (steps == null)
+            return;
         foreach (var step in steps)
         {
             var action = step.GameBoard.CurrentAction;
@@ -95,16 +104,6 @@ public partial class Program
     {
         Swipe(new Vector2Int(7, 7), new Vector2Int(7, 9));
         await Task.Delay(TimeSpan.FromSeconds(1));
-    }
-
-
-    private static void Swipe(Vector2Int start,Vector2Int move)
-    {
-        Log.Information($"Swipe:{start}-{move}");
-        var offset = new Vector2Int(0, 5);
-        start = (start + offset) * 100;
-        move = (move + offset) * 100;
-        InputHelper.SwipeScreen(start.x,start.y,move.x,move.y);
     }
 
 

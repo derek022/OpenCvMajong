@@ -15,7 +15,8 @@ public class AutoResolve
         Finished = false;
         var board = new GameBoard();
         board.SetBoardData(initBoard);
-        
+        Log.Information("初始状态：");
+        board.PrintState();
         GameLogic logic = new GameLogic(board);
         
         LinkedList<GameLogic> states = new();
@@ -66,6 +67,7 @@ public class AutoResolve
             }
         }
 
+        // current.PrintState();
         Log.Information("当前状态没有发现有效路径。返回上一步。。");
         return false;
     }

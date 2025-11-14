@@ -31,7 +31,7 @@ public class Screen2DigitalData
                 var realPos = new Vector2Int(pos.X / 100 , (pos.Y - 500) / 100);
                 // Log.Debug($"坐标转换：{cardEnum.ToString()},screenPos:{pos.X}_{pos.Y} , realPos:{realPos}");
 
-                if (initBoard[realPos.y, realPos.x] == Cards.Zero)
+                if (initBoard[realPos.y, realPos.x] == Cards.Zero || initBoard[realPos.y, realPos.x] == cardEnum)
                 {
                     initBoard[realPos.y, realPos.x] = cardEnum;    
                 }
