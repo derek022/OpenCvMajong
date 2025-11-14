@@ -36,18 +36,29 @@ public partial class Program
     
     private async static Task TestScreenPos2DigitalPos()
     {
-        var initBaord = Screen2DigitalData.Execute("Res/Pics/Daily_Mahjong_Match.jpg", "Res/Prepared", Config.ScaleRange.X,
-            Config.ScaleRange.Y);
+        var screenFile = "screen.png";
+        InputHelper.Screenshot(screenFile);
+        await Task.Delay(500);
         
+        var initBaord = Screen2DigitalData.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X,
+            Config.ScaleRange.Y);
+
+        GameBoard board = new GameBoard();
+        board.SetBoardData(initBaord);
+        board.PrintState();
         var steps = AutoResolve.Init(initBaord);
 
         foreach (var step in steps)
         {
-            // Swipe(step.GameBoard.CurrentAction.StartPos,step.GameBoard.CurrentAction.EndPos,)
-            var currentAction = step.GameBoard.CurrentAction;
+            var action = step.GameBoard.CurrentAction;
+            if(action is null)
+                continue;
             
+            var movePos = Action2MovePos(action);
             
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            step.GameBoard.PrintState();
+            Swipe(action.StartPos,movePos);
+            await Task.Delay(TimeSpan.FromSeconds(2f));
         }
     }
     
@@ -89,6 +100,7 @@ public partial class Program
 
     private static void Swipe(Vector2Int start,Vector2Int move)
     {
+        Log.Information($"Swipe:{start}-{move}");
         var offset = new Vector2Int(0, 5);
         start = (start + offset) * 100;
         move = (move + offset) * 100;

@@ -206,7 +206,7 @@ public class Vector2Int(int x, int y) : IEquatable<Vector2Int>, IFormattable
   public static Vector2Int operator /(Vector2Int a, int b) => new Vector2Int(a.x / b, a.y / b);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static bool operator ==(Vector2Int lhs, Vector2Int rhs)
+  public static bool operator ==(Vector2Int lhs, Vector2Int? rhs)
   {
     return lhs.x == rhs.x && lhs.y == rhs.y;
   }

@@ -22,7 +22,7 @@ public class MahjongTemplateMatcher
 
         for (double scale = minScale; scale <= maxScale; scale += step)
         {
-            Log.Information($"当前比例尺:{scale}");
+            // Log.Information($"当前比例尺:{scale}");
             // 缩放模板
             int newW = (int)(template.Width * scale);
             int newH = (int)(template.Height * scale);
@@ -76,10 +76,10 @@ public class MahjongTemplateMatcher
                 // Cv2.ImWrite($"roi_{i}.png", resultCopy);
             }
             results.AddRange(tempResults);
-            Log.Information($"当前比例尺{scale,03},找到了{i - 1}个匹配方案");
+            // Log.Information($"当前比例尺{scale,03},找到了{i - 1}个匹配方案");
             if (tempResults.Count % 2 == 0)
             {
-                Log.Information("数量符合，直接返回。");
+                Log.Information($"当前比例尺{scale},查找的数量符合{i - 1}，直接返回。");
                 return tempResults;
             }
         }

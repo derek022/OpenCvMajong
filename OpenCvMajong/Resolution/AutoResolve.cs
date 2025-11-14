@@ -23,7 +23,7 @@ public class AutoResolve
         if (SearchState(states))
         {
             // 打印 log
-            PrintResults(states);
+            // PrintResults(states);
 
             return states;
         }
@@ -79,7 +79,7 @@ public class AutoResolve
         {
             GameLogic next = new GameLogic(current.GameBoard.DeepClone());
             next.MergeAction(from, to, offset, distance, Tools.GetDir(from, to, isVer));
-            next.PrintState();
+            // next.PrintState();
             states.AddLast(next);
             if (SearchState(states))
             {

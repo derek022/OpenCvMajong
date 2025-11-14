@@ -10,7 +10,7 @@ public class GameBoard
     // 加上边界
     public Cards[] Boards { get; set; } = null!;
 
-    public MoveAction CurrentAction { get; set; } = new MoveAction();
+    public MoveAction CurrentAction { get; set; }
 
     public int Width { get; set; }
     public int Height { get; set; }
@@ -134,7 +134,10 @@ public class GameBoard
     public void PrintState()
     {
         var curAction = CurrentAction;
-        Log.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
+        if (curAction != null)
+        {
+            Log.Information($"start: {curAction.StartPos} ,direction: {curAction.Direction}, target:{curAction.EndPos}");
+        }
         Log.Information("Game Mahjong States is :");
         for (int i = 0; i < Height; i++)
         {

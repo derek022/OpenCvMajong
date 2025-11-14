@@ -1,5 +1,3 @@
-using System.Diagnostics;
-using System.Numerics;
 using Mahjong.Core;
 using Mahjong.Core.Util;
 using OpenCvSharp;
@@ -24,13 +22,14 @@ public class Screen2DigitalData
 
             if (results.Count % 2 != 0)
             {
+                Log.Error("出现错误的识别。。。");
                 MahjongTemplateMatcher.DrawMatches(screenShot, results, template,
                     "result/" + Path.GetFileName(templateFilePath));
             }
             foreach (var pos in results)
             {
                 var realPos = new Vector2Int(pos.X / 100 , (pos.Y - 500) / 100);
-                Log.Debug($"坐标转换：{cardEnum.ToString()},screenPos:{pos.X}_{pos.Y} , realPos:{realPos}");
+                // Log.Debug($"坐标转换：{cardEnum.ToString()},screenPos:{pos.X}_{pos.Y} , realPos:{realPos}");
 
                 if (initBoard[realPos.y, realPos.x] == Cards.Zero)
                 {
