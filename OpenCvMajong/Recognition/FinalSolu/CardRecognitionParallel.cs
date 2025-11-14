@@ -7,6 +7,7 @@ using Serilog;
 
 namespace Mahjong.Recognition.FinalSolu;
 
+
 public class CardRecognitionParallel
 {
     protected static readonly ILogger Logger = Log.ForContext<CardRecognitionParallel>();
@@ -68,14 +69,7 @@ public class CardRecognitionParallel
 
                 swTask.Stop();
                 Logger.Debug($"[Thread {Thread.CurrentThread.ManagedThreadId}] 查找 {cardEnum} 完成，耗时 {swTask.ElapsedMilliseconds} ms, 找到 {results.Count} 个匹配");
-
-                if (results.Count % 2 != 0)
-                {
-                    Logger.Error($"[Thread {Thread.CurrentThread.ManagedThreadId}] 模板 {cardEnum} 出现错误的识别 (数量: {results.Count})");
-                    MahjongTemplateMatcher.DrawMatches(screenShot, results, template,
-                        "result/" + cardEnum + ".png");
-                }
-
+                
                 foreach (var pos in results)
                 {
                     var realPos = new Vector2Int(pos.X / 100, (pos.Y - 500) / 100);

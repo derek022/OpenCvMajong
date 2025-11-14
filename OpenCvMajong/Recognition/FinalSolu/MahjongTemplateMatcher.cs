@@ -30,6 +30,10 @@ public class MahjongTemplateMatcher
         
         var results = new List<MatchResult>();
 
+        var confirmedRegions = new HashSet<GridPoint>();
+        // 临时100，
+        int gridCellSize = 100; // 可以根据实际情况调整
+
         for (double scale = minScale; scale <= maxScale; scale += step)
         {
             // Log.Information($"当前比例尺:{scale}");
@@ -61,22 +65,14 @@ public class MahjongTemplateMatcher
                 {
                     break;
                 }
-                
-                // 去重，位置相近的屏蔽掉
-                
-                bool isContains = false;
-                foreach (var res in results)
-                {
-                    if (Math.Abs(maxLoc.X - res.X) < 10 && Math.Abs(maxLoc.Y - res.Y) < 10)
-                    {
-                        isContains = true;
-                        break;
-                    }
-                }
 
-                if (!isContains)
+                // // 去重，位置相近的屏蔽掉
+                var gridLoc = new GridPoint(maxLoc.X / gridCellSize, maxLoc.Y / gridCellSize);
+
+                // 看是否有已确认的匹配
+                var neighborGrid = new GridPoint(gridLoc.X, gridLoc.Y);
+                if (!confirmedRegions.Contains(neighborGrid))
                 {
-                    // 记录结果
                     results.Add(new MatchResult
                     {
                         X = maxLoc.X,
@@ -84,8 +80,32 @@ public class MahjongTemplateMatcher
                         Scale = scale,
                         Score = maxVal
                     });
+                    // 将该网格单元标记为已确认
+                    confirmedRegions.Add(gridLoc);
                 }
                 
+                // bool isContains = false;
+                // foreach (var res in results)
+                // {
+                //     if (Math.Abs(maxLoc.X - res.X) < 10 && Math.Abs(maxLoc.Y - res.Y) < 10)
+                //     {
+                //         isContains = true;
+                //         break;
+                //     }
+                // }
+                //
+                // if (!isContains)
+                // {
+                //     // 记录结果
+                //     results.Add(new MatchResult
+                //     {
+                //         X = maxLoc.X,
+                //         Y = maxLoc.Y,
+                //         Scale = scale,
+                //         Score = maxVal
+                //     });
+                // }
+                //
 
                 // 创建掩码：覆盖匹配区域
                 int maskSize = (int)(Math.Max(template.Width, template.Height) * scale * 0.7);
@@ -103,7 +123,7 @@ public class MahjongTemplateMatcher
         // 按得分降序排列
         results = results.OrderByDescending(r => r.Score).ToList();
         
-        Logger.Information($"共找到 {results.Count} 个唯一匹配项。");
+        // Logger.Information($"共找到 {results.Count} 个唯一匹配项。");
         return results;
     }
 
@@ -128,6 +148,6 @@ public class MahjongTemplateMatcher
         }
 
         img.SaveImage(outputPath);
-        Logger.Information($"结果已保存至: {outputPath}");
+        // Logger.Information($"结果已保存至: {outputPath}");
     }
 }

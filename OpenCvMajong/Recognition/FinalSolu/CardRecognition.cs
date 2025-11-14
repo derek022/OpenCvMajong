@@ -26,7 +26,7 @@ public class CardRecognition
         var bigMat = new Mat(screenShot);
         foreach (var templateFilePath in Directory.GetFiles(templateDir,"*.png"))
         {
-            Logger.Debug($"查找：{templateFilePath}");
+            // Logger.Debug($"查找：{templateFilePath}");
             using var template = new Mat(templateFilePath);
             var results = MahjongTemplateMatcher.FindAllUniqueMatches(bigMat, template, minScale, maxScale);
             
