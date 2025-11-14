@@ -4,9 +4,10 @@ using Mahjong.Core;
 namespace Mahjong.Resolution.SearchState;
 
 /// <summary>
-/// 多线程版本,并行
+/// 多线程版本,并行,
+/// todo 待测试
 /// </summary>
-public class SearchStateV3Parallel : ISearchLogic
+public class SearchStateVParallel : ISearchLogic
 {
     private static readonly ConcurrentDictionary<string, bool> VisitedStates = new();
     private static readonly SemaphoreSlim Semaphore = new(10); // 限制并发数
@@ -36,7 +37,7 @@ public class SearchStateV3Parallel : ISearchLogic
     }
     
     
-    private static LinkedList<GameLogic> InternalSearchStateParallel(GameLogic initialState, 
+    private LinkedList<GameLogic> InternalSearchStateParallel(GameLogic initialState, 
         LinkedList<GameLogic> initialPath, CancellationToken cancellationToken)
     {
         var parallelOptions = new ParallelOptions
@@ -75,7 +76,7 @@ public class SearchStateV3Parallel : ISearchLogic
         return solution.TryPop(out var foundSolution) ? foundSolution : null;
     }
 
-    private static LinkedList<GameLogic> SearchStateIterative(LinkedList<GameLogic> path, 
+    private LinkedList<GameLogic> SearchStateIterative(LinkedList<GameLogic> path, 
         CancellationToken cancellationToken)
     {
         var stack = new Stack<LinkedList<GameLogic>>();

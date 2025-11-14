@@ -7,15 +7,21 @@ namespace Mahjong.Resolution.SearchState;
 /// <summary>
 /// 递归版本
 /// </summary>
-public class SearchStateV1Recursion : ISearchLogic
+public class SearchStateVRecursion : ISearchLogic
 {
-    private static bool Finished = false;
+    protected readonly ILogger Logger = Serilog.Log.ForContext<SearchStateVRecursion>();
+    private static bool SolutionFound = false;
     
     LinkedList<GameLogic> initialPath = new();
     
+    /// <summary>
+    /// 死局状态,用于剔除多余计算
+    /// </summary>
+    LinkedList<GameLogic> deadStates = new();
+    
     public void Initialize(GameLogic initialState)
     {
-        Finished = false;
+        SolutionFound = false;
         
         initialPath.AddLast(initialState);
     }
@@ -31,17 +37,25 @@ public class SearchStateV1Recursion : ISearchLogic
     }
     
     
-    private static bool InternalSearchState(LinkedList<GameLogic> states)
+    private bool InternalSearchState(LinkedList<GameLogic> states)
     {
         var current = states.Last();
         if (current.IsFinalState())
         {
-            Log.Error(" find final state");
-            Finished = true;
+            Logger.Error(" find final state");
+            SolutionFound = true;
             return true;
         }
-
-        Log.Error("--------------- 开始搜索当前牌局------------");
+        
+        // 剪枝，已经判断死局的状态中，包含当前状态，直接返回。
+        if (IsMatchDead(current))
+        {
+            // 符合死局条件
+            Logger.Error("已经发现当前符合死局条件，直接返回上一步，不在搜索");
+            return false;
+        }
+        
+        Logger.Error("--------------- 开始搜索当前牌局------------");
         current.PrintState();
         foreach (var pair in current.CardPositions)
         {
@@ -55,7 +69,6 @@ public class SearchStateV1Recursion : ISearchLogic
                         continue;
                     }
 
-                    // todo 没有进行剪枝，有很多重复的逻辑
                     var from = values[i];
                     var to = values[j];
 
@@ -63,7 +76,7 @@ public class SearchStateV1Recursion : ISearchLogic
                     foreach (var isVer in SearchTool.GetSearchDirArr(from, to))
                     {
                         SearchStateOnAction(states, current, from, to, isVer);
-                        if (Finished)
+                        if (SolutionFound)
                         {
                             return true;
                         }
@@ -72,14 +85,13 @@ public class SearchStateV1Recursion : ISearchLogic
             }
         }
 
-        // current.PrintState();
-        // Log.Information("当前状态没有发现有效路径。返回上一步。。");
+        deadStates.AddLast(current);
         Thread.Sleep(10);
         return false;
     }
     
     
-    private static void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to,
+    private void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to,
         bool isVer)
     {
         if (current.CanMergeAction(from, to, isVer, out var offset, out var distance))
@@ -94,6 +106,19 @@ public class SearchStateV1Recursion : ISearchLogic
 
             states.RemoveLast();
         }
+    }
+
+    private bool IsMatchDead(GameLogic current)
+    {
+        foreach (var deadState in deadStates)
+        {
+            if (SearchTool.ArrayMatchesWithWildcard(current.GameBoard.Boards, deadState.GameBoard.Boards, Cards.Zero))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
