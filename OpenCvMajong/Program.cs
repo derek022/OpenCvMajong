@@ -1,8 +1,8 @@
-﻿using System.Text.Json;
-using Mahjong.Core;
+﻿using Mahjong.Core;
 using Mahjong.Core.Util;
 using Mahjong.Recognition.FinalSolu;
 using Mahjong.Resolution;
+using Mahjong.Resolution.SearchState;
 using Serilog;
 using Serilog.Events;
 
@@ -16,7 +16,8 @@ public partial class Program
         InitLogger();
         // Swipe(new Vector2Int(4,2),new Vector2Int(4,3));
         // TestDead();
-        await TestScreenPos2DigitalPos();
+        TestResolve();
+        // await TestScreenPos2DigitalPos();
         // await RunAsync();
     }
 
@@ -36,7 +37,7 @@ public partial class Program
             Log.Information("输入任意按键，开启下一个 stage.");
         }
     }
-    
+
     private static async Task<bool> ExecuteOnceAsync()
     {
         // 截图
@@ -45,9 +46,9 @@ public partial class Program
         await Task.Delay(500);
         // 图像识别
         var initBoard = CardRecognition.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X, Config.ScaleRange.Y);
-        
+
         // 自动解析
-        var results = AutoResolve.Init(initBoard);
+        var results = await AutoResolve.InitAsync<SearchStateV1Recursion>(initBoard);
 
         if (results.Count == 0)
         {
@@ -63,28 +64,28 @@ public partial class Program
         foreach (var step in results)
         {
             var action = step.GameBoard.CurrentAction;
-            if(action is null)
+            if (action is null)
                 continue;
-            
+
             step.GameBoard.PrintState();
-            
+
             if (action.StartPos.x == action.EndPos.x || action.StartPos.y == action.EndPos.y)
             {
-                Click(action.StartPos);   
+                Click(action.StartPos);
             }
             else
             {
                 var movePos = Action2MovePos(action);
-                Swipe(action.StartPos,movePos);    
+                Swipe(action.StartPos, movePos);
             }
-            
+
             await Task.Delay(TimeSpan.FromSeconds(1f));
         }
 
         return true;
     }
-    
-    
+
+
 
     private static void Swipe(Vector2Int start,Vector2Int move)
     {

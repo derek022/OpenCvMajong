@@ -1,5 +1,6 @@
 using Mahjong.Core;
 using Mahjong.Core.Util;
+using Mahjong.Resolution.SearchState;
 using Serilog;
 
 namespace Mahjong.Resolution;
@@ -7,10 +8,8 @@ namespace Mahjong.Resolution;
 public class AutoResolve
 {
     private static bool Finished = false;
-
-    private static bool[] VerHorArr = new[] { true, false };
     
-    public static LinkedList<GameLogic> Init(Cards[,] initBoard)
+    public static async Task<LinkedList<GameLogic>> InitAsync<T>(Cards[,] initBoard) where T : ISearchLogic ,new()
     {
         Finished = false;
         var board = new GameBoard();
@@ -19,79 +18,12 @@ public class AutoResolve
         board.PrintState();
         GameLogic logic = new GameLogic(board);
         
-        LinkedList<GameLogic> states = new();
-        states.AddLast(logic);
-        if (SearchState(states))
-        {
-            // 打印 log
-            // PrintResults(states);
+        var search = new T();
+        search.Initialize(logic);
 
-            return states;
-        }
-
-        return null;
+        return await search.SearchState();
     }
     
-    public static bool SearchState(LinkedList<GameLogic> states)
-    {
-        var current = states.Last();
-        if (current.IsFinalState())
-        {
-            Finished = true;
-            return true;
-        }
-        
-        foreach (var pair in current.CardPositions)
-        {
-            var values = pair.Value;
-            for (int i = 0; i < values.Count; i++)
-            {
-                for (var j = 0; j < values.Count; j++)
-                {
-                    if (i == j)
-                    {
-                        continue;
-                    }
-                    
-                    var from = values[i];
-                    var to = values[j];
-                    foreach (var isVer in VerHorArr)
-                    {
-                        SearchStateOnAction(states, current, from, to, isVer);
-                        if (Finished)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        // current.PrintState();
-        Log.Information("当前状态没有发现有效路径。返回上一步。。");
-        return false;
-    }
-
-
-
-    public static void SearchStateOnAction(LinkedList<GameLogic> states, GameLogic current, Vector2Int from, Vector2Int to,
-        bool isVer)
-    {
-        if (current.CanMergeAction(from, to, isVer, out var offset, out var distance))
-        {
-            GameLogic next = new GameLogic(current.GameBoard.DeepClone());
-            next.MergeAction(from, to, offset, distance, Tools.GetDir(from, to, isVer));
-            // next.PrintState();
-            states.AddLast(next);
-            if (SearchState(states))
-            {
-                return;
-            }
-
-            states.RemoveLast();
-        }
-    }
-
     public static void PrintResults(LinkedList<GameLogic> states)
     {
         Log.Information("发现可解路径，移动过程如下：");

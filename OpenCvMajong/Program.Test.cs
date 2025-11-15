@@ -1,8 +1,10 @@
+using System.Text;
 using System.Text.Json;
 using Mahjong.Core;
 using Mahjong.Core.Util;
 using Mahjong.Recognition.FinalSolu;
 using Mahjong.Resolution;
+using Mahjong.Resolution.SearchState;
 using OpenCvSharp;
 using Serilog;
 
@@ -11,6 +13,9 @@ namespace Mahjong;
 public partial class Program
 {
     
+    /// <summary>
+    /// 测试单个模板图片识别
+    /// </summary>
     private static void TestSingleMatcher()
     {
         string bigImagePath = "screen_fail2.png";
@@ -33,14 +38,6 @@ public partial class Program
             MahjongTemplateMatcher.DrawMatches(bigImagePath, matches, croppedTemplate, resultPath);
         }
     }
-
-    private static void TestDead()
-    {
-        var steps = AutoResolve.Init(SampleBoards.TestData.TestDead);
-
-        
-    }
-    
     
     private async static Task TestScreenPos2DigitalPos()
     {
@@ -54,7 +51,7 @@ public partial class Program
         GameBoard board = new GameBoard();
         board.SetBoardData(initBaord);
         board.PrintState();
-        var steps = AutoResolve.Init(initBaord);
+        var steps =await AutoResolve.InitAsync<SearchStateV1Recursion>(initBaord);
 
         if (steps == null)
             return;
@@ -82,7 +79,10 @@ public partial class Program
         }
     }
     
-    private static void Test()
+    /// <summary>
+    /// 测试单个位置消除
+    /// </summary>
+    private static void TestSingleMove()
     {
         GameBoard board = new GameBoard();
         board.SetBoardData(SampleBoards.TestData.Test1);
@@ -100,7 +100,43 @@ public partial class Program
         }
     }
 
+    /// <summary>
+    /// 测试结局棋盘
+    /// </summary>
+    private static async void TestResolve()
+    {
+        try
+        {
+            var steps =await AutoResolve.InitAsync<SearchStateV1Recursion>(SampleBoards.ExpertBoard4);
+            foreach (var step in steps)
+            {
+                step.PrintState();
+            }
+        }
+        catch (Exception e)
+        {
+            throw; // TODO handle exception
+        }
+    }
+
+    private static void Print2csData(GameBoard board)
+    {
+        for (int i = 1; i < board.Height - 1; i++)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append($"{{");
+            for (int j = 1; j < board.Width -1; j++)
+            {
+                builder.Append($"Cards.{board.GetCard(j, i)},");
+            }
+            builder.Append("},");
+            Log.Information(builder.ToString());
+        }
+    }
     
+    /// <summary>
+    /// 输入测试
+    /// </summary>
     private static async Task TestInputAsync()
     {
         Swipe(new Vector2Int(7, 7), new Vector2Int(7, 9));
