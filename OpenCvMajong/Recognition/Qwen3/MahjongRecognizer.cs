@@ -2,12 +2,12 @@ using OpenCvSharp;
 
 namespace Mahjong.Recognition.Qwen3
 {
-    public class MahjongBoardRecognizer
+    public class MahjongRecognizer
     {
         // 假设你有一个包含所有可能牌面模板的字典
         private Dictionary<string, Mat> _templates; // Key: 牌面名称 (如 "西", "一筒"), Value: 模板图像
 
-        public MahjongBoardRecognizer(Dictionary<string, Mat> templates)
+        public MahjongRecognizer(Dictionary<string, Mat> templates)
         {
             _templates = templates;
         }

@@ -42,7 +42,7 @@ public class SearchStateVRecursion : ISearchLogic
         var current = states.Last();
         if (current.IsFinalState())
         {
-            Logger.Error(" find final state");
+            Logger.Error(" find solution path");
             SolutionFound = true;
             return true;
         }
@@ -55,7 +55,7 @@ public class SearchStateVRecursion : ISearchLogic
             return false;
         }
         
-        Logger.Error("--------------- 开始搜索当前牌局------------");
+        // Logger.Error("--------------- 开始搜索当前牌局------------");
         current.PrintState();
         foreach (var pair in current.CardPositions)
         {
@@ -85,7 +85,10 @@ public class SearchStateVRecursion : ISearchLogic
             }
         }
 
-        deadStates.AddLast(current);
+        if (!IsMatchDead(current))
+        {
+            deadStates.AddLast(current);
+        }
         Thread.Sleep(10);
         return false;
     }

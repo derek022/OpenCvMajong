@@ -3,6 +3,7 @@ using System.Text.Json;
 using Mahjong.Core;
 using Mahjong.Core.Util;
 using Mahjong.Recognition.FinalSolu;
+using Mahjong.Recognition.Qwen3;
 using Mahjong.Resolution;
 using Mahjong.Resolution.SearchState;
 using OpenCvSharp;
@@ -42,7 +43,7 @@ public partial class Program
 
     private async static Task TestScreenPos2DigitalPos()
     {
-        var screenFile = "screen_back.png";
+        var screenFile = "screen.png";
         // InputHelper.Screenshot(screenFile);
         // await Task.Delay(500);
 
@@ -52,23 +53,23 @@ public partial class Program
         GameBoard board = new GameBoard();
         board.SetBoardData(initBaord);
         board.PrintState();
-        // var steps = await AutoResolve.InitAsync<SearchStateVRecursion>(initBaord);
-        //
-        // if (steps == null)
-        //     return;
-        // Log.Debug("发现了解题过程。。。。");
-        // foreach (var step in steps)
-        // {
-        //     var action = step.GameBoard.CurrentAction;
-        //     if (action is null)
-        //         continue;
-        //
-        //     // var movePos = Action2MovePos(action);
-        //
-        //     step.GameBoard.PrintState();
-        //     // Swipe(action.StartPos,movePos);
-        //     // await Task.Delay(TimeSpan.FromSeconds(2f));
-        // }
+        var steps = await AutoResolve.InitAsync<SearchStateVRecursion>(initBaord);
+        
+        if (steps == null)
+            return;
+        Log.Debug("发现了解题过程。。。。");
+        foreach (var step in steps)
+        {
+            var action = step.GameBoard.CurrentAction;
+            if (action is null)
+                continue;
+        
+            // var movePos = Action2MovePos(action);
+        
+            step.GameBoard.PrintState();
+            // Swipe(action.StartPos,movePos);
+            // await Task.Delay(TimeSpan.FromSeconds(2f));
+        }
     }
 
 
@@ -95,7 +96,7 @@ public partial class Program
         
         if (gameLogic.CanMergeAction(start, target, isVerMove, out var offset,out var distance))
         {
-            Log.Information("Merge action");
+            // Log.Information("Merge action");
             gameLogic.MergeAction(start,target,offset,distance,Tools.GetDir(start,target,isVerMove));
             
             gameLogic.PrintState();
@@ -144,6 +145,12 @@ public partial class Program
     {
         Swipe(new Vector2Int(7, 7), new Vector2Int(7, 9));
         await Task.Delay(TimeSpan.FromSeconds(1));
+    }
+
+
+    private static void TestSplitMatch()
+    {
+        MahjongExecute.Execute();
     }
 
 

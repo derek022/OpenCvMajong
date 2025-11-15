@@ -15,7 +15,7 @@ namespace Mahjong.Recognition.FinalSolu;
  */
 public class MahjongTemplateV2Matcher
 {
-    protected static readonly ILogger Logger = Log.ForContext<CardRecognition>();
+    protected static readonly ILogger Logger = Log.ForContext<CardRecognitionParallel>();
 
     // 粗搜索 + 精搜索 ---
     public static List<MatchResult> FindAllUniqueMatches(

@@ -5,7 +5,7 @@ namespace Mahjong.Recognition.FinalSolu;
 
 public class MahjongTemplateMatcher
 {
-    protected static readonly ILogger Logger = Log.ForContext<CardRecognition>();
+    protected static readonly ILogger Logger = Log.ForContext<MahjongTemplateMatcher>();
     
     /// <summary>
     /// 模板匹配主函数

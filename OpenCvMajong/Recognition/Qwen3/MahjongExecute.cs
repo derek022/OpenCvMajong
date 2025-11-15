@@ -13,7 +13,7 @@ class MahjongExecute
         // 1. 加载所有模板图像
         var templates = new Dictionary<string, Mat>();
         // 这里需要你提供具体的模板文件路径
-        var files = Directory.GetFiles("Cards", "*.png");
+        var files = Directory.GetFiles("Res/Prepared", "*.png");
         foreach (var file in files)
         {
             var fileName = Path.GetFileNameWithoutExtension(file);
@@ -21,18 +21,21 @@ class MahjongExecute
         }
 
         // 2. 创建识别器实例
-        var recognizer = new MahjongRecognizerWithFeatures(templates);
-        using var sift = SIFT.Create();
-        // using var surf = SURF.Create(200);
-        using var bfMatcher = new BFMatcher();
-        // using var flannMatcher = new FlannBasedMatcher();
-        
-        Recognize(recognizer, sift, bfMatcher);
-        // Recognize(recognizer, sift, flannMatcher);
-
-        // Recognize(recognizer, surf, bfMatcher);
-        // Recognize(recognizer, ORB.Create(), bfMatcher);
-        // Recognize(recognizer, surf, flannMatcher);
+        var recognizer = new MahjongRecognizer(templates);
+        var res = recognizer.MatchTemplate("screen.png");
+        Print(null,res);
+        // var recognizer = new MahjongRecognizerWithFeatures(templates);
+        // using var sift = SIFT.Create();
+        // // using var surf = SURF.Create(200);
+        // using var bfMatcher = new BFMatcher();
+        // // using var flannMatcher = new FlannBasedMatcher();
+        //
+        // Recognize(recognizer, sift, bfMatcher);
+        // // Recognize(recognizer, sift, flannMatcher);
+        //
+        // // Recognize(recognizer, surf, bfMatcher);
+        // // Recognize(recognizer, ORB.Create(), bfMatcher);
+        // // Recognize(recognizer, surf, flannMatcher);
         
         Cv2.WaitKey();
     }
@@ -55,14 +58,14 @@ class MahjongExecute
 
     private static void Print(MahjongRecognizerWithFeatures recognize,string[,] board)
     {
-        Console.WriteLine($"{recognize._detector} == {recognize._matcher} => 识别结果：");
+        // Console.WriteLine($"{recognize._detector} == {recognize._matcher} => 识别结果：");
         for (int i = 0; i < board.GetLength(0); i++)
         {
             for (int j = 0; j < board.GetLength(1); j++)
             {
-                if (board[i, j] != SampleBoards.ExpertBoard3[i, j].ToString())
+                // if (board[i, j] != SampleBoards.ExpertBoard3[i, j].ToString())
                 {
-                    Console.WriteLine($"{i}:{j} => recognize is {board[i, j]} , record is {SampleBoards.ExpertBoard3[i, j]}");
+                    Console.WriteLine($"{i}:{j} => recognize is {board[i, j]}");
                 }
             }
             Console.WriteLine();

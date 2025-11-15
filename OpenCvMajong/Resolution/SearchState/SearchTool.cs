@@ -71,7 +71,7 @@ public static class SearchTool
         // 2. 转换为列表并排序
         var readMoves = uniqueMoves.ToList(); // ToList 会创建一个新列表，可以安全排序
         // 排序，根据距离
-        readMoves.Sort(new DistanceMoveAction());
+        readMoves.Sort(new MoveActionDistanceComparer());
 
         return readMoves;
     }
