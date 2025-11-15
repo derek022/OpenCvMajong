@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using Mahjong.Core.Util;
 using Serilog;
@@ -238,7 +239,7 @@ public class GameLogic
     {
         Log.Information("--------------------LogicPrintState start---------");
         GameBoard?.PrintState();
-        PrintCachePos();
+        // PrintCachePos();
         Log.Information("--------------------LogicPrintState end----------");
     }
 
@@ -283,5 +284,25 @@ public class GameLogic
         }
     }
     
-    
+    // 在GameLogic类中添加状态哈希方法
+    public string GetStateHash()
+    {
+        // 根据当前棋盘状态生成唯一标识
+        var sb = new StringBuilder();
+        for (int i = 0; i < GameBoard.Width; i++)
+        {
+            for (int j = 0; j < GameBoard.Height; j++)
+            {
+                sb.Append(GameBoard.GetCard(i, j).ToString());
+                sb.Append(",");
+            }
+        }
+        return sb.ToString();
+    }
+
+    // 优化IsSameState方法，使用哈希比较
+    public bool IsSameState(GameLogic other)
+    {
+        return GetStateHash() == other.GetStateHash();
+    }
 }
