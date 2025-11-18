@@ -66,7 +66,7 @@ public partial class Program
         
             // var movePos = Action2MovePos(action);
         
-            step.GameBoard.PrintState();
+            step.PrintState();
             // Swipe(action.StartPos,movePos);
             // await Task.Delay(TimeSpan.FromSeconds(2f));
         }

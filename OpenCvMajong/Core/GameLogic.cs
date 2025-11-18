@@ -289,7 +289,7 @@ public class GameLogic
             {
                 // throw new InvalidDataException($"数据结构异常。{pair.Key} count is {pair.Value.Count}");
             }
-            Logger.Information($"card:{pair.Key},position:{JsonSerializer.Serialize(pair.Value)}");
+            // Logger.Information($"card:{pair.Key},position:{JsonSerializer.Serialize(pair.Value)}");
         }
     }
     
@@ -313,5 +313,10 @@ public class GameLogic
     public bool IsSameState(GameLogic other)
     {
         return GetStateHash() == other.GetStateHash();
+    }
+
+    public GameLogic DeepClone()
+    {
+        return  Tools.DeepCopy(this);
     }
 }
