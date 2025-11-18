@@ -26,19 +26,24 @@ public class SearchStateVRecursion : ISearchLogic
         initialPath.AddLast(initialState);
     }
 
-    public Task<LinkedList<GameLogic>> SearchState()
+    public Task<LinkedList<GameLogic>?> SearchState()
     {
         if (InternalSearchState(initialPath))
         {
             return Task.FromResult(initialPath);
         }
 
-        return null!;
+        return null;
     }
     
     
     private bool InternalSearchState(LinkedList<GameLogic> states)
     {
+        if (states.Count == 0)
+        {
+            Logger.Error("没有找到解题步骤");
+            return false;
+        }
         var current = states.Last();
         if (current.IsFinalState())
         {

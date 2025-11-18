@@ -9,7 +9,7 @@ public class AutoResolve
 {
     protected static readonly ILogger Logger = Serilog.Log.ForContext<AutoResolve>();
     
-    public static async Task<LinkedList<GameLogic>> InitAsync<T>(Cards[,] initBoard) where T : ISearchLogic ,new()
+    public static async Task<LinkedList<GameLogic>?> InitAsync<T>(Cards[,] initBoard) where T : ISearchLogic ,new()
     {
         var board = new GameBoard();
         board.SetBoardData(initBoard);
@@ -27,6 +27,8 @@ public class AutoResolve
     
     public static void PrintResults(LinkedList<GameLogic> states)
     {
+        if (states == null)
+            return;
         Logger.Information("发现可解路径，移动过程如下：");
         foreach (var state in states)
         {

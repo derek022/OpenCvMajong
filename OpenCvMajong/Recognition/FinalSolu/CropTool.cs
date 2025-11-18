@@ -5,7 +5,7 @@ namespace Mahjong.Recognition.FinalSolu;
 
 public class CropTool
 {
-    protected static readonly ILogger Logger = Log.ForContext<CardRecognition>();
+    protected static readonly ILogger Logger = Log.ForContext<CropTool>();
     
     /// <summary>
     /// 模板图片裁剪

@@ -21,7 +21,7 @@ public class SearchStateVParallel : ISearchLogic
         rootPath.AddLast(initialState);
     }
 
-    public async Task<LinkedList<GameLogic>> SearchState()
+    public async Task<LinkedList<GameLogic>?> SearchState()
     {
         var cts = new CancellationTokenSource();
         
