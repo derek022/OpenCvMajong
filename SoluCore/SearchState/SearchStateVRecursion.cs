@@ -11,25 +11,27 @@ public class SearchStateVRecursion : ISearchLogic
     protected readonly ILogger Logger = Log.ForContext<SearchStateVRecursion>();
     private static bool SolutionFound = false;
     
-    LinkedList<IGameLogic> initialPath = new();
     
     /// <summary>
     /// 死局状态,用于剔除多余计算
     /// </summary>
     LinkedList<IGameLogic> clipStates = new();
-    
+
+    public LinkedList<IGameLogic> States { get; set; }
+
     public void Initialize(IGameLogic initialState)
     {
+        States  = new LinkedList<IGameLogic>();
         SolutionFound = false;
         
-        initialPath.AddLast(initialState);
+        States.AddLast(initialState);
     }
 
     public Task<LinkedList<IGameLogic>?> SearchState()
     {
-        if (InternalSearchState(initialPath))
+        if (InternalSearchState(States))
         {
-            return Task.FromResult(initialPath);
+            return Task.FromResult(States);
         }
 
         return null;
@@ -43,37 +45,29 @@ public class SearchStateVRecursion : ISearchLogic
     /// <returns></returns>
     public bool IsProcessedState(LinkedList<IGameLogic>? inputs, IGameLogic next)
     {
-
         foreach (var input in inputs)
         {
-
             if (next.Stage.IsSameState(input.Stage))
             {
                 return true;
             }
         }
 
-        foreach (var deadState in clipStates)
+        return IsMatchDead(clipStates,next);
+    }
+
+    public bool IsMatchDead(LinkedList<IGameLogic>? deadList, IGameLogic next)
+    {
+        foreach (var dead in deadList)
         {
-            if (next.Stage.IsSameState(deadState.Stage))
+            if (next.Stage.IsDeadMatchSimilarState(dead.Stage))
             {
                 return true;
-            }
+            }   
         }
 
         return false;
     }
-
-    public bool IsMatchDead( IGameLogic next)
-    {
-        if (next.Stage.IsSameState(next))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
 
     private bool InternalSearchState(LinkedList<IGameLogic> states)
     {
@@ -89,6 +83,11 @@ public class SearchStateVRecursion : ISearchLogic
             SolutionFound = true;
             return true;
         }
+
+        if (IsMatchDead(clipStates,current))
+        {
+            return false;
+        }
         
         // Logger.Error("--------------- 开始搜索当前牌局------------");
         current.PrintState();
@@ -101,7 +100,7 @@ public class SearchStateVRecursion : ISearchLogic
             }
         }
         
-        if (!IsMatchDead(current))
+        if (!IsMatchDead(clipStates,current))
         {
             clipStates.AddLast(current);
         }
@@ -109,8 +108,6 @@ public class SearchStateVRecursion : ISearchLogic
         Thread.Sleep(10);
         return false;
     }
-    
-    
     
     
     private void SearchStateOnAction(LinkedList<IGameLogic> states, IGameLogic current, IAction action )

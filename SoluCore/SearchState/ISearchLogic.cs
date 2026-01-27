@@ -4,6 +4,7 @@ namespace SoluCore.SearchState;
 
 public interface ISearchLogic
 {
+    LinkedList<IGameLogic> States { get; set; }
     void Initialize(IGameLogic logic);
     Task<LinkedList<IGameLogic>?> SearchState();
     
