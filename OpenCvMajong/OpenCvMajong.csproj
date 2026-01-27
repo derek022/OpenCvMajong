@@ -33,4 +33,8 @@
       <Folder Include="Res\Prepared\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SoluCore\SoluCore.csproj" />
+    </ItemGroup>
+
 </Project>

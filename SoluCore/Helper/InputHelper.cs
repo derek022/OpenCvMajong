@@ -1,7 +1,6 @@
 using System.Diagnostics;
-using Mahjong.Core;
 
-namespace Mahjong.Resolution;
+namespace SoluCore.Helper;
 
 public class InputHelper
 {
