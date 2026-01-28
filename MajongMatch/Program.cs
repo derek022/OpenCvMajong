@@ -4,7 +4,6 @@ using Mahjong.Recognition.FinalSolu;
 using Mahjong.Resolution;
 using Mahjong.Resolution.SearchState;
 using Serilog;
-using Serilog.Events;
 using SoluCore.Helper;
 
 namespace Mahjong;
@@ -14,7 +13,7 @@ public partial class Program
     
     static async Task Main(string[] args)
     {
-        InitLogger();
+        SerilogHelper.InitLogger();
         // Swipe(new Vector2Int(4,2),new Vector2Int(4,3));
         // TestDead();
         // await TestResolve();
@@ -127,26 +126,6 @@ public partial class Program
         return movePos;
     }
     
-    private static void InitLogger()
-    {
-        if(File.Exists("logs/log.txt"))
-            File.Delete("logs/log.txt");
-        Log.Logger = new LoggerConfiguration()
-#if DEBUG
-            .MinimumLevel.Debug()
-#else
-                .MinimumLevel.Information()
-#endif
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .Enrich.FromLogContext()
-            .WriteTo.Async(c => c.Console())
-            .WriteTo.Async(f => f.File("logs/log.txt"))
-            .CreateLogger();
-        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-        {
-            Log.Error(e.ExceptionObject as Exception, "Unhandled exception");
-        };
-    }
     
 
 }
