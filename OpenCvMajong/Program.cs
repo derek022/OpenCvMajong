@@ -18,7 +18,7 @@ public partial class Program
         // TestDead();
         // await TestResolve();
         // await TestScreenPos2DigitalPos();
-        // await RunAsync();
+        await RunAsync();
         // TestSplitMatch();
     }
 
@@ -35,6 +35,8 @@ public partial class Program
                 Log.Error("失败。");
                 break;
             }
+            Log.Information("棋牌执行完毕。。。");
+            Log.Information("----------- 分割线 ------------");
             Log.Information("输入任意按键，开启下一个 stage.");
         }
     }
@@ -48,6 +50,7 @@ public partial class Program
         // 图像识别
         var initBoard = CardRecognitionParallel.Execute(screenFile, "Res/Prepared", Config.ScaleRange.X, Config.ScaleRange.Y);
 
+        Log.Information("棋盘识别完成，开始自动解析...");
         // 自动解析
         var results = await AutoResolve.InitAsync<SearchStateVRecursion>(initBoard);
 
@@ -56,11 +59,8 @@ public partial class Program
             Log.Error("No results found");
             return false;
         }
-
-        // var json = JsonSerializer.Serialize(results);
-        // await File.WriteAllTextAsync("temp.json", json);
-        // 移除初始状态
-        // results.RemoveFirst();
+        
+        Log.Information("自动解析完成，开始执行...");
         // 根据结果，移动方块，滑动屏幕
         foreach (var step in results)
         {

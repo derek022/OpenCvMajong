@@ -47,7 +47,7 @@ public class SearchStateVRecursion : ISearchLogic
         var current = states.Last();
         if (current.IsFinalState())
         {
-            Logger.Error(" find solution path");
+            Logger.Information(" find solution path");
             SolutionFound = true;
             return true;
         }
@@ -61,7 +61,7 @@ public class SearchStateVRecursion : ISearchLogic
         }
         
         // Logger.Error("--------------- 开始搜索当前牌局------------");
-        current.PrintState();
+        // current.PrintState();
         foreach (var pair in current.CardPositions)
         {
             var values = pair.Value;

@@ -21,7 +21,7 @@ public class AutoResolve
         search.Initialize(logic);
 
         var result = await search.SearchState();
-        PrintResults(result);
+        // PrintResults(result);
         return result;
     }
     
