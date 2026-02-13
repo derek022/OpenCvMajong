@@ -17,7 +17,7 @@ public partial class Program
         // Swipe(new Vector2Int(4,2),new Vector2Int(4,3));
         // TestDead();
         // await TestResolve();
-        await TestScreenPos2DigitalPos();
+        // await TestScreenPos2DigitalPos();
         // await RunAsync();
         // TestSplitMatch();
     }
